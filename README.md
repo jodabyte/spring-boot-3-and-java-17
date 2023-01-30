@@ -7,5 +7,7 @@ Spring Boot 3 and Java 17 powered things.
 
 ## Features
 - Uses spring-boot-starter dependencies for developing.
-- [RESTful API](https://learn.microsoft.com/en-us/azure/architecture/best-practices/api-design):
-    - ping: Checks if the service is alive.
+- [API Endpoints](https://learn.microsoft.com/en-us/azure/architecture/best-practices/api-design):
+    - OpenAPI [json](http://localhost:8080/v3/api-docs) [yaml](http://localhost:8080/v3/api-docs.yaml)
+    - [Swagger UI](http://localhost:8080/swagger-ui.html)
+    - [Spring Actuator](http://localhost:8080/actuator)
