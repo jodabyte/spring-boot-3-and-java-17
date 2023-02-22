@@ -1,4 +1,4 @@
-package com.example.springboot3andjava17.pingservice;
+package com.example.springboot3andjava17.domain;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
