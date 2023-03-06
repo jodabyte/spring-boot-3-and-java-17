@@ -1,4 +1,4 @@
-package com.example.springboot3andjava17.adapter;
+package com.example.springboot3andjava17.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 

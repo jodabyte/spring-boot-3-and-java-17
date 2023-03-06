@@ -16,6 +16,10 @@
 	<description>Spring Boot 3 and Java 17 powered things</description>
 	<properties>
 		<java.version>17</java.version>
+		<maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
+		<org.mapstruct.version>1.5.3.Final</org.mapstruct.version>
+		<org.springdoc.version>2.0.2</org.springdoc.version>
+		<org.projectlombok.version>1.18.26</org.projectlombok.version>
 	</properties>
 
 	<dependencies>
@@ -34,22 +38,27 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
-
-		<!-- Generates an OpenAPI documentation for spring boot projects -->
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-			<version>2.0.2</version>
+			<version>${org.springdoc.version}</version>
 		</dependency>
-
-		<!-- Automatic Resource Management, automatic generation of getters, setters, equals, hashCode and toString, and more!  -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.26</version>
+			<version>${org.projectlombok.version}</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+			<version>${org.mapstruct.version}</version>
 		</dependency>
 	</dependencies>
 
@@ -63,6 +72,32 @@
 					<image>
 						<name>${project.artifactId}:${project.version}</name>
 					</image>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>${org.projectlombok.version}</version>
+						</path>
+						<path>
+							<groupId>org.mapstruct</groupId>
+							<artifactId>mapstruct-processor</artifactId>
+							<version>${org.mapstruct.version}</version>
+						</path>
+					</annotationProcessorPaths>
+					<compilerArgs>
+						<arg>
+							-Amapstruct.defaultComponentModel=spring
+						</arg>
+					</compilerArgs>
 				</configuration>
 			</plugin>
 		</plugins>

@@ -1,21 +1,23 @@
 # Spring Boot 3 and Java 17
 Spring Boot 3 and Java 17 powered things. 
 
-## Dependencies
+# Dependencies
 - Java 17
 - Maven
 - Docker
+- Portainer
 
-## Getting Startet
-### Build Docker Image
+# Getting Startet
+## Build Docker Image
 `spring-boot:build-image`
-### Deploy locally
-#### Create and start services
-`docker compose -f .\docker\docker-compose.yaml up`
-#### Stop services and remove containers, networks
-`docker compose -f .\docker\docker-compose.yaml down`
+## Deploy locally
+### Docker Compose
+Create and start services: `docker compose -f .\docker\docker-compose.yaml up`  
+Stop services and remove containers, networks: `docker compose -f .\docker\docker-compose.yaml down`
+### Portainer
+Use the docker compose file to create a stack in portainer.
 
-## Features
+# Features
 - Uses spring-boot-starter dependencies for developing.
 - [API Endpoints](https://learn.microsoft.com/en-us/azure/architecture/best-practices/api-design):
     - OpenAPI [json](http://localhost:8080/v3/api-docs) [yaml](http://localhost:8080/v3/api-docs.yaml)
