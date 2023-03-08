@@ -1,8 +1,8 @@
-package com.example.springboot3andjava17.domain;
+package com.example.springboot3andjava17.asset;
 
 import org.springframework.data.annotation.Id;
 
-import com.example.springboot3andjava17.service.validation.ValidationConstants;
+import com.example.springboot3andjava17.common.validation.ValidationConstants;
 import com.mongodb.lang.NonNull;
 
 import jakarta.validation.constraints.NotBlank;
@@ -17,9 +17,9 @@ import lombok.NoArgsConstructor;
 public class Asset {
 
     @Id
-    @Pattern(regexp = ValidationConstants.MONGODB_ID_PATTERN, message = "{mongodb.id.message}")
+    @Pattern(regexp = ValidationConstants.ID_PATTERN, message = "{validation.asset.id}")
     private String id;
     @NonNull
-    @NotBlank(message = "Name is mandatory")
+    @NotBlank(message = "{validation.asset.name}")
     private String name;
 }

@@ -1,4 +1,4 @@
-package com.example.springboot3andjava17.controller;
+package com.example.springboot3andjava17.ping;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.example.springboot3andjava17.domain.Ping;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

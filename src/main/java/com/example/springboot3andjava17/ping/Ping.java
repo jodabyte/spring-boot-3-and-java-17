@@ -1,4 +1,4 @@
-package com.example.springboot3andjava17.domain;
+package com.example.springboot3andjava17.ping;
 
 import lombok.Value;
 

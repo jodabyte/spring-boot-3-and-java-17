@@ -1,4 +1,4 @@
-package com.example.springboot3andjava17.service;
+package com.example.springboot3andjava17.asset;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,11 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.example.springboot3andjava17.domain.Asset;
-import com.example.springboot3andjava17.domain.dto.AssetCreatDTO;
-import com.example.springboot3andjava17.domain.mapper.AssetMapper;
-import com.example.springboot3andjava17.repository.AssetRepository;
-import com.example.springboot3andjava17.service.validation.ValidationConstants;
+import com.example.springboot3andjava17.common.validation.ValidationConstants;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
@@ -33,11 +29,11 @@ public class AssetService {
     }
 
     public Asset createAsset(@Valid AssetCreatDTO asset) {
-        return assetRepository.insert(assetMapper.assetCreatDtoToAsset(asset));
+        return assetRepository.save(assetMapper.assetCreatDtoToAsset(asset));
     }
 
     public Asset getAssetById(
-            @Pattern(regexp = ValidationConstants.MONGODB_ID_PATTERN, message = "{mongodb.id.message}") String id) {
+            @Pattern(regexp = ValidationConstants.ID_PATTERN, message = "{validation.asset.id}") String id) {
         Optional<Asset> asset = assetRepository.findById(id);
         return asset.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
@@ -51,7 +47,7 @@ public class AssetService {
     }
 
     public void deleteAsset(
-            @Pattern(regexp = ValidationConstants.MONGODB_ID_PATTERN, message = "{mongodb.id.message}") String id) {
+            @Pattern(regexp = ValidationConstants.ID_PATTERN, message = "{validation.asset.id}") String id) {
         Optional<Asset> optional = assetRepository.findById(id);
         Asset asset = optional.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         assetRepository.delete(asset);
