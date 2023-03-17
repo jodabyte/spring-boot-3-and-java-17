@@ -1,0 +1,29 @@
+application:
+  version: '@project.version@'
+  name: '@project.name@'
+
+spring:
+  data:
+    mongodb:
+      host: localhost
+
+springdoc:
+  default-produces-media-type: application/json
+  show-actuator: 'true'
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+  info:
+    os:
+      enabled: 'true'
+    java:
+      enabled: 'true'
+    build:
+      enabled: 'true'

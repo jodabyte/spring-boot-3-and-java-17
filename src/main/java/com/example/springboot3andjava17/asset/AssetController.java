@@ -36,7 +36,7 @@ public class AssetController {
     @PostMapping("/assets")
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "create asset", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(schema = @Schema(implementation = AssetCreatDTO.class))), responses = @ApiResponse(responseCode = "201", content = @Content(schema = @Schema(implementation = Asset.class))))
-    public Asset createAsset(@RequestBody(required = true) AssetCreatDTO asset) {
+    public Asset create(@RequestBody(required = true) AssetCreatDTO asset) {
         return assetService.createAsset(asset);
     }
 
@@ -49,7 +49,7 @@ public class AssetController {
         return assetService.getAssetById(id);
     }
 
-    @PutMapping("/assets/{id}")
+    @PutMapping("/assets")
     @Operation(summary = "update by id", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(schema = @Schema(implementation = Asset.class))), responses = {
             @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Asset.class))),
             @ApiResponse(responseCode = "404", content = @Content)

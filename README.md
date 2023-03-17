@@ -16,7 +16,12 @@ Create and start services: `docker compose -f .\docker\docker-compose.yaml up`
 Stop services and remove containers, networks: `docker compose -f .\docker\docker-compose.yaml down`
 ### Portainer
 Use the docker compose file to create a stack in portainer.
-
+## Tests
+### Unit Tests
+`mvn test`
+### Integration tests
+`mvn verify` or `mvn integration-test`
+ 
 # Features
 - Uses spring-boot-starter dependencies for developing.
 - [API Endpoints](https://learn.microsoft.com/en-us/azure/architecture/best-practices/api-design):
