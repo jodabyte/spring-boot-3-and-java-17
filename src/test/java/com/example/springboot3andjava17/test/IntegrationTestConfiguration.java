@@ -1,4 +1,4 @@
-package com.example.springboot3andjava17.common;
+package com.example.springboot3andjava17.test;
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;

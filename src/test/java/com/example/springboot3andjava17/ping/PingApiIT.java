@@ -8,8 +8,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec;
 
+import com.example.springboot3andjava17.test.AbstractIntegrationTest;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class PingApiIT {
+public class PingApiIT extends AbstractIntegrationTest {
 
     @Autowired
     private WebTestClient webClient;

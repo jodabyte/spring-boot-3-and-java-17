@@ -1,4 +1,4 @@
-package com.example.springboot3andjava17.common;
+package com.example.springboot3andjava17.test;
 
 import java.util.List;
 import java.util.Random;

@@ -17,15 +17,16 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec;
 
-import com.example.springboot3andjava17.common.DataFactory;
-import com.example.springboot3andjava17.common.IntegrationTestConfiguration;
 import com.example.springboot3andjava17.common.validation.ValidationConstants;
 import com.example.springboot3andjava17.common.validation.ValidationErrorResponse;
 import com.example.springboot3andjava17.common.validation.Violation;
+import com.example.springboot3andjava17.test.AbstractIntegrationTest;
+import com.example.springboot3andjava17.test.DataFactory;
+import com.example.springboot3andjava17.test.IntegrationTestConfiguration;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(IntegrationTestConfiguration.class)
-public class AssetApiIT {
+public class AssetApiIT extends AbstractIntegrationTest {
 
         @Autowired
         private WebTestClient webClient;
@@ -42,7 +43,7 @@ public class AssetApiIT {
         @Test
         void All_GetAllAssets_ReturnsAllAssets() throws Exception {
                 List<Asset> expected = assetRepository.saveAll(dataFactory.createAssets(3));
-
+                
                 ResponseSpec response = webClient.get().uri("/assets")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .exchange();
