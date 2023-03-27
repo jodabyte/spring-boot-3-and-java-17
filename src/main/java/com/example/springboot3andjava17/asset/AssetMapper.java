@@ -6,5 +6,5 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface AssetMapper {
 
-    Asset assetCreatDtoToAsset(AssetCreatDTO assetCreatDTO);
+  Asset assetCreatDtoToAsset(AssetCreatDto assetCreatDto);
 }

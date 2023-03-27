@@ -5,6 +5,5 @@ import org.springframework.data.repository.ListPagingAndSortingRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
 @NoRepositoryBean
-public interface Repository<T> extends ListCrudRepository<T,String>, ListPagingAndSortingRepository<T,String> {
-    
-}
+public interface Repository<T>
+    extends ListCrudRepository<T, String>, ListPagingAndSortingRepository<T, String> {}

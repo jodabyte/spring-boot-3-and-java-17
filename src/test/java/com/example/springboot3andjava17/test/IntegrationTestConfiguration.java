@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Bean;
 @TestConfiguration
 public class IntegrationTestConfiguration {
 
-    @Bean
-    public DataFactory getDataFactory() {
-        return new DataFactory();
-    }
+  @Bean
+  public DataFactory getDataFactory() {
+    return new DataFactory();
+  }
 }

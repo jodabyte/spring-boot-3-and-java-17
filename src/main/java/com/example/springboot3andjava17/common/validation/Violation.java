@@ -5,6 +5,6 @@ import lombok.Value;
 @Value
 public class Violation {
 
-    private String name;
-    private String message;
+  private String name;
+  private String message;
 }

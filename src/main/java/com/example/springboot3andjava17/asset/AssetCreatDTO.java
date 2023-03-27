@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AssetCreatDTO {
+public class AssetCreatDto {
 
-    @NotBlank(message = "{validation.asset.name}")
-    private String name;
+  @NotBlank(message = "{validation.asset.name}")
+  private String name;
 }

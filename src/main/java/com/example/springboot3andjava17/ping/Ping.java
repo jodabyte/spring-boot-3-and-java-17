@@ -5,7 +5,7 @@ import lombok.Value;
 @Value
 public class Ping {
 
-    private String serviceName;
-    private String serviceVersion;
-    private String timestamp;
+  private String serviceName;
+  private String serviceVersion;
+  private String timestamp;
 }
