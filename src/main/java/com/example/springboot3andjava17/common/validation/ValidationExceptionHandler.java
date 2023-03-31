@@ -6,6 +6,7 @@ import jakarta.validation.Path.Node;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.stream.StreamSupport;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @see <a href= "https://stackoverflow.com/q/50232456">
  *     how-to-find-out-whether-a-constraintviolation-is-from-a-json-property-or-from-a</a>
  */
+@Slf4j
 @ControllerAdvice
 public class ValidationExceptionHandler {
 
@@ -39,6 +41,7 @@ public class ValidationExceptionHandler {
     List<Violation> violations =
         e.getConstraintViolations().stream().map(this::mapToViolation).toList();
     validationErrorResponse.addViolations(violations);
+    log.info("Constraint violation parsed={}", validationErrorResponse.getViolations());
     return validationErrorResponse;
   }
 
@@ -56,6 +59,7 @@ public class ValidationExceptionHandler {
     List<Violation> violations =
         e.getBindingResult().getFieldErrors().stream().map(this::mapToViolation).toList();
     validationErrorResponse.addViolations(violations);
+    log.info("Method argument violation parsed={}", validationErrorResponse.getViolations());
     return validationErrorResponse;
   }
 

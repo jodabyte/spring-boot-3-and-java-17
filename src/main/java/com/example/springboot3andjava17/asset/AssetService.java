@@ -4,12 +4,13 @@ import com.example.springboot3andjava17.common.validation.ValidationConstants;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
-import org.springframework.http.HttpStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.server.ResponseStatusException;
 
+@Slf4j
 @Service
 @Validated
 public class AssetService {
@@ -24,33 +25,48 @@ public class AssetService {
   }
 
   public List<Asset> getAllAssets() {
-    return assetRepository.findAll();
+    List<Asset> assets = assetRepository.findAll();
+    log.info("Query for all assets, result count={}", assets.size());
+    return assets;
   }
 
-  public Asset createAsset(@Valid AssetCreatDto asset) {
-    return assetRepository.save(assetMapper.assetCreatDtoToAsset(asset));
+  public Asset createAsset(@Valid AssetCreatDto assetDto) {
+    Asset asset = assetRepository.save(assetMapper.assetCreatDtoToAsset(assetDto));
+    log.info("Added asset={}", asset);
+    return asset;
   }
 
   public Asset getAssetById(
       @Pattern(regexp = ValidationConstants.ID_PATTERN, message = "{validation.asset.id}")
           String id) {
-    Optional<Asset> asset = assetRepository.findById(id);
-    return asset.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    Optional<Asset> optional = assetRepository.findById(id);
+    Asset asset = optional.orElseThrow(() -> prepareNoSuchElementException(id));
+    log.info("Query for asset by id, result={}", asset);
+    return asset;
   }
 
-  public Asset updateAsset(@Valid Asset asset) {
-    Optional<Asset> optional = assetRepository.findById(asset.getId());
+  public Asset updateAsset(@Valid Asset assetToUpdate) {
+    Optional<Asset> optional = assetRepository.findById(assetToUpdate.getId());
     if (optional.isEmpty()) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+      throw prepareNoSuchElementException(assetToUpdate.getId());
     }
-    return assetRepository.save(asset);
+    Asset asset = assetRepository.save(assetToUpdate);
+    log.info("Asset updated={}", asset);
+    return asset;
   }
 
   public void deleteAsset(
       @Pattern(regexp = ValidationConstants.ID_PATTERN, message = "{validation.asset.id}")
           String id) {
     Optional<Asset> optional = assetRepository.findById(id);
-    Asset asset = optional.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    Asset asset = optional.orElseThrow(() -> prepareNoSuchElementException(id));
     assetRepository.delete(asset);
+    log.info("Asset deleted={}", asset);
+  }
+
+  private NoSuchElementException prepareNoSuchElementException(String id) {
+    var msg = String.format("Could not find asset with id=%s", id);
+    log.warn(msg);
+    return new NoSuchElementException(msg);
   }
 }

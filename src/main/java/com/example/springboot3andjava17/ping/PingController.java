@@ -9,17 +9,18 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @Tag(name = "Ping", description = "Service availability and info")
 public class PingController {
 
   private String serviceName;
-
   private String serviceVersion;
 
   public PingController(
@@ -40,10 +41,13 @@ public class PingController {
                       mediaType = MediaType.APPLICATION_JSON_VALUE,
                       schema = @Schema(implementation = Ping.class))))
   public Ping ping() {
-    return new Ping(
-        serviceName,
-        serviceVersion,
-        ZonedDateTime.now(ZoneOffset.UTC)
-            .format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG)));
+    var ping =
+        new Ping(
+            serviceName,
+            serviceVersion,
+            ZonedDateTime.now(ZoneOffset.UTC)
+                .format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG)));
+    log.info("Service state ready, ping response={}", ping);
+    return ping;
   }
 }

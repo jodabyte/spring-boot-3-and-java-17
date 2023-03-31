@@ -3,6 +3,9 @@ application:
   name: '@project.name@'
 
 spring:
+  output:
+      ansi:
+        enabled: always
   data:
     mongodb:
       host: localhost
