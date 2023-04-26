@@ -1,11 +1,12 @@
 application:
   version: '@project.version@'
-  name: '@project.name@'
 
 spring:
+  application:
+    name: '@project.name@'
   output:
-      ansi:
-        enabled: always
+    ansi:
+      enabled: always
   data:
     mongodb:
       host: localhost

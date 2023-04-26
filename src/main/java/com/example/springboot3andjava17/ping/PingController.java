@@ -24,7 +24,7 @@ public class PingController {
   private String serviceVersion;
 
   public PingController(
-      @Value("${application.name:}") String serviceName,
+      @Value("${spring.application.name:}") String serviceName,
       @Value("${application.version:}") String serviceVersion) {
     this.serviceName = serviceName;
     this.serviceVersion = serviceVersion;

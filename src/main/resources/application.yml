@@ -1,8 +1,13 @@
 application:
   version: '@project.version@'
-  name: '@project.name@'
+
+logging:
+  pattern:
+    level: '%5p [%X{traceId:-}:%X{spanId:-}]'
 
 spring:
+  application:
+    name: '@project.name@'
   output:
       ansi:
         enabled: always
@@ -16,6 +21,14 @@ springdoc:
   show-actuator: 'true'
 
 management:
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1.0
+  metrics:
+    mongo:
+      command:
+        enabled: false     
   endpoints:
     web:
       exposure:

@@ -12,6 +12,9 @@ Spring Boot 3 and Java 17 powered things.
 - Ops
     - Portainer as production environment
     - Monitoring using spring boot actuator
+        - Tracing using Micrometer
+            - Format: OpenTelemetry
+            - Export: Zipkin
 - QA
     - Unittests, IT
     - Testcontainers for back-end dependencies
@@ -55,3 +58,6 @@ Use the docker compose file to create a stack in portainer.
 - OpenAPI [json](http://localhost:8080/v3/api-docs) [yaml](http://localhost:8080/v3/api-docs.yaml)
 - [Swagger UI](http://localhost:8080/swagger-ui.html)
 - [Spring Actuator](http://localhost:8080/actuator)
+- [Portainer](https://localhost:9443)
+- [SonarQube](http://localhost:9000)
+- [Zipkin](http://localhost:9411)
