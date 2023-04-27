@@ -30,17 +30,20 @@ management:
       command:
         enabled: false     
   endpoints:
+    enabled-by-default: true
     web:
       exposure:
-        include: health,info
+        include: '*'
   endpoint:
+    configprops:
+      show-values: always
+    env:
+      show-values: always
     health:
       show-details: always
-      show-components: always
+      show-components: always    
   info:
     os:
       enabled: 'true'
     java:
-      enabled: 'true'
-    build:
       enabled: 'true'
