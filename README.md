@@ -53,6 +53,11 @@ Use the docker compose file to create a stack in portainer.
 `mvn spotless:apply spotless:check` to format code  
 `mvn checkstyle:check` or `mvn checkstyle:checkstyle` to run checkstyle analysis  
 `mvn clean verify sonar:sonar` to run sonarqube analysis  
+## Maven
+### Checking for new property-linked updates 
+`mvn versions:display-property-updates`
+### Checking for new dependency updates
+`mvn versions:display-dependency-updates`
  
 # [API Endpoints](https://learn.microsoft.com/en-us/azure/architecture/best-practices/api-design)
 - OpenAPI [json](http://localhost:8080/v3/api-docs) [yaml](http://localhost:8080/v3/api-docs.yaml)
