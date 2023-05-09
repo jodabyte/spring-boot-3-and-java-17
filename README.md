@@ -14,6 +14,9 @@ Spring Boot 3 and Java 17 powered things.
     - Monitoring using spring boot actuator
         - Tracing using Micrometer
             - Format: OpenTelemetry
+    - Profiles:
+        - local deployment
+        - docker deployment
 - QA
     - Unittests, IT
     - Testcontainers for back-end dependencies
