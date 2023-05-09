@@ -14,7 +14,6 @@ Spring Boot 3 and Java 17 powered things.
     - Monitoring using spring boot actuator
         - Tracing using Micrometer
             - Format: OpenTelemetry
-            - Export: Zipkin
 - QA
     - Unittests, IT
     - Testcontainers for back-end dependencies
@@ -65,4 +64,3 @@ Use the docker compose file to create a stack in portainer.
 - [Spring Actuator](http://localhost:8080/actuator)
 - [Portainer](https://localhost:9443)
 - [SonarQube](http://localhost:9000)
-- [Zipkin](http://localhost:9411)

@@ -6,6 +6,8 @@ logging:
     level: '%5p [%X{traceId:-}:%X{spanId:-}]'
 
 spring:
+  profiles:
+    active: local
   application:
     name: '@project.name@'
   output:
@@ -13,7 +15,6 @@ spring:
         enabled: always
   data:
     mongodb:
-      host: localhost
       database: app-data
 
 springdoc:
