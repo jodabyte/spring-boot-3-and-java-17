@@ -1,0 +1,54 @@
+services:
+  kafka-ui:
+    image: provectuslabs/kafka-ui:v0.7.0
+    container_name: kafka-ui
+    ports:
+      - 8081:8080
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+      DYNAMIC_CONFIG_ENABLED: true
+    volumes:
+      - kafka_ui_conf:/config.yml
+    networks:
+      - kafka-tier
+  kafka:
+    image: bitnami/kafka:3.4
+    container_name: kafka
+    ports:
+      - 9092:9092
+    environment:
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    networks:
+      - kafka-tier
+  mongodb:
+    image: mongodb/mongodb-community-server:6.0-ubi8
+    container_name: mongodb
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - app-tier
+  springboot3andjava17:
+    image: spring-boot-3-and-java-17:0.0.1-SNAPSHOT
+    container_name: springboot3andjava17
+    ports:
+      - 8080:8080
+    depends_on:
+      - mongodb
+      - kafka
+    environment:
+    - spring.profiles.active=docker
+    networks:
+      - app-tier
+
+volumes:
+  mongodb_data:
+  kafka_ui_conf:
+
+networks:
+  app-tier:
+    driver: bridge
