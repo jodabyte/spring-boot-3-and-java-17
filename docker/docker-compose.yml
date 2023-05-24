@@ -1,4 +1,24 @@
 services:
+  asset-service:
+    image: asset-service:0.0.1-SNAPSHOT
+    container_name: asset-service
+    ports:
+      - 8080:8080
+    depends_on:
+      - mongodb
+    environment:
+    - spring.profiles.active=docker
+    networks:
+      - app-tier
+  mongodb:
+    image: mongodb/mongodb-community-server:6.0-ubi8
+    container_name: mongodb
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - app-tier
   kafka-ui:
     image: provectuslabs/kafka-ui:v0.7.0
     container_name: kafka-ui
@@ -13,7 +33,7 @@ services:
     volumes:
       - kafka_ui_conf:/config.yml
     networks:
-      - kafka-tier
+      - app-tier
   kafka:
     image: bitnami/kafka:3.4
     container_name: kafka
@@ -21,27 +41,6 @@ services:
       - 9092:9092
     environment:
       - ALLOW_PLAINTEXT_LISTENER=yes
-    networks:
-      - kafka-tier
-  mongodb:
-    image: mongodb/mongodb-community-server:6.0-ubi8
-    container_name: mongodb
-    ports:
-      - 27017:27017
-    volumes:
-      - mongodb_data:/data/db
-    networks:
-      - app-tier
-  springboot3andjava17:
-    image: spring-boot-3-and-java-17:0.0.1-SNAPSHOT
-    container_name: springboot3andjava17
-    ports:
-      - 8080:8080
-    depends_on:
-      - mongodb
-      - kafka
-    environment:
-    - spring.profiles.active=docker
     networks:
       - app-tier
 
