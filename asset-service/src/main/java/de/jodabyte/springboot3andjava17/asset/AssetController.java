@@ -42,12 +42,12 @@ public class AssetController {
       summary = "create asset",
       requestBody =
           @io.swagger.v3.oas.annotations.parameters.RequestBody(
-              content = @Content(schema = @Schema(implementation = AssetCreatDto.class))),
+              content = @Content(schema = @Schema(implementation = Asset.class))),
       responses =
           @ApiResponse(
               responseCode = "201",
               content = @Content(schema = @Schema(implementation = Asset.class))))
-  public Asset create(@RequestBody(required = true) AssetCreatDto asset) {
+  public Asset create(@RequestBody(required = true) Asset asset) {
     return assetService.createAsset(asset);
   }
 

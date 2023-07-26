@@ -5,11 +5,11 @@ import io.swagger.v3.oas.annotations.info.Info;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@OpenAPIDefinition(info = @Info(title = "SpringBoot3AndJava17 API", version = "1.0"))
+@OpenAPIDefinition(info = @Info(title = "Asset Service API", version = "1.0"))
 @SpringBootApplication
-public class SpringBoot3AndJava17Application {
+public class AssetServiceApplication {
 
   public static void main(String[] args) {
-    SpringApplication.run(SpringBoot3AndJava17Application.class, args);
+    SpringApplication.run(AssetServiceApplication.class, args);
   }
 }

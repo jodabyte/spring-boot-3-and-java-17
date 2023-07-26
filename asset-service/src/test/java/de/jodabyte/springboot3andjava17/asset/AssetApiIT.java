@@ -9,6 +9,7 @@ import de.jodabyte.springboot3andjava17.common.validation.Violation;
 import de.jodabyte.springboot3andjava17.test.AbstractIntegrationTest;
 import de.jodabyte.springboot3andjava17.test.DataFactory;
 import de.jodabyte.springboot3andjava17.test.IntegrationTestConfiguration;
+import java.util.Arrays;
 import java.util.List;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.bson.types.ObjectId;
@@ -37,7 +38,7 @@ class AssetApiIT extends AbstractIntegrationTest {
 
   @Test
   void All_GetAllAssets_ReturnsAllAssets() throws Exception {
-    List<Asset> expected = assetRepository.saveAll(dataFactory.createAssets(3));
+    List<Asset> expected = assetRepository.saveAll(dataFactory.createAssets(5));
 
     ResponseSpec response =
         webClient.get().uri("/assets").accept(MediaType.APPLICATION_JSON).exchange();
@@ -49,7 +50,7 @@ class AssetApiIT extends AbstractIntegrationTest {
 
   @Test
   void Create_SaveAsset_ReturnIsCreated() throws Exception {
-    AssetCreatDto expected = dataFactory.createAssetCreatDTO();
+    Asset expected = dataFactory.createAsset();
 
     ResponseSpec response =
         webClient
@@ -87,9 +88,17 @@ class AssetApiIT extends AbstractIntegrationTest {
 
   @Test
   void Create_RequiredAssetPropertiesAreEmpty_ReturnBadRequest() throws Exception {
-    AssetCreatDto invalidDto = new AssetCreatDto("");
-    Violation expected =
-        new Violation("name", messageSource.getMessage("validation.asset.name", null, null));
+    Asset invalidAsset = new Asset();
+    // List<Violation> expected = Arrays.asList(new Violation("name",
+    // messageSource.getMessage("validation.asset.name", null, null)),
+    // new Violation("networkconfiguration",
+    // messageSource.getMessage("validation.asset.networkconfiguration", null, null)));
+    List<Violation> expected =
+        Arrays.asList(
+            new Violation("name", messageSource.getMessage("validation.asset.name", null, null)),
+            new Violation(
+                "networkConfiguration",
+                messageSource.getMessage("validation.asset.networkconfiguration", null, null)));
 
     ResponseSpec response =
         webClient
@@ -97,7 +106,7 @@ class AssetApiIT extends AbstractIntegrationTest {
             .uri("/assets")
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
-            .bodyValue(invalidDto)
+            .bodyValue(invalidAsset)
             .exchange();
     response.expectStatus().isBadRequest();
 
@@ -106,7 +115,7 @@ class AssetApiIT extends AbstractIntegrationTest {
     assertThat(actual)
         .extracting(ValidationErrorResponse::getViolations)
         .asInstanceOf(InstanceOfAssertFactories.list(Violation.class))
-        .contains(expected);
+        .containsExactlyInAnyOrderElementsOf(expected);
   }
 
   @Test
@@ -166,6 +175,7 @@ class AssetApiIT extends AbstractIntegrationTest {
   void Update_UpdateAsset_ReturnAsset() throws Exception {
     Asset expected = assetRepository.save(dataFactory.createAsset());
     expected.setName(dataFactory.createAssetName());
+    expected.setNetworkConfiguration(dataFactory.createMqttNetworkConfiguration());
 
     ResponseSpec response =
         webClient

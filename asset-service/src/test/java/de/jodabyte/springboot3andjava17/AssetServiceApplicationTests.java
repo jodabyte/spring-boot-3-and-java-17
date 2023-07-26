@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 
 @SpringBootTest
-class SpringBoot3AndJava17ApplicationTests extends AbstractIntegrationTest {
+class AssetServiceApplicationTests extends AbstractIntegrationTest {
 
   @Test
   void ApplicationContext_LoadContext_ContextIsNotNull(ApplicationContext context) {

@@ -17,11 +17,8 @@ public class AssetService {
 
   private AssetRepository assetRepository;
 
-  private AssetMapper assetMapper;
-
-  public AssetService(AssetRepository assetRepository, AssetMapper assetMapper) {
+  public AssetService(AssetRepository assetRepository) {
     this.assetRepository = assetRepository;
-    this.assetMapper = assetMapper;
   }
 
   public List<Asset> getAllAssets() {
@@ -30,8 +27,8 @@ public class AssetService {
     return assets;
   }
 
-  public Asset createAsset(@Valid AssetCreatDto assetDto) {
-    Asset asset = assetRepository.save(assetMapper.assetCreatDtoToAsset(assetDto));
+  public Asset createAsset(@Valid Asset assetDto) {
+    Asset asset = assetRepository.save(assetDto);
     log.info("Added asset={}", asset);
     return asset;
   }
