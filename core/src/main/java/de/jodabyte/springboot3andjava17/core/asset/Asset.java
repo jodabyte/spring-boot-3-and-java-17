@@ -1,4 +1,4 @@
-package de.jodabyte.springboot3andjava17.asset;
+package de.jodabyte.springboot3andjava17.core.asset;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -18,7 +18,7 @@ public final class Asset {
   @NotBlank(message = "{validation.asset.name}")
   private String name;
 
-  @NotNull(message = "{validation.asset.networkconfiguration}")
+  @NotNull(message = "{validation.asset.networkConfiguration}")
   private NetworkConfiguration networkConfiguration;
 
   public static Asset of(

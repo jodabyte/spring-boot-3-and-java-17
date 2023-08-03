@@ -1,11 +1,3 @@
 package de.jodabyte.springboot3andjava17.ping;
 
-import lombok.Value;
-
-@Value
-public class Ping {
-
-  private String serviceName;
-  private String serviceVersion;
-  private String timestamp;
-}
+public record Ping(String serviceName, String serviceVersion, String timestamp) {}

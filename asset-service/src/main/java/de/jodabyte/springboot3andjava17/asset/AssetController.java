@@ -1,5 +1,6 @@
 package de.jodabyte.springboot3andjava17.asset;
 
+import de.jodabyte.springboot3andjava17.core.asset.Asset;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -47,7 +48,7 @@ public class AssetController {
           @ApiResponse(
               responseCode = "201",
               content = @Content(schema = @Schema(implementation = Asset.class))))
-  public Asset create(@RequestBody(required = true) Asset asset) {
+  public Asset create(@RequestBody Asset asset) {
     return assetService.createAsset(asset);
   }
 
@@ -60,7 +61,7 @@ public class AssetController {
             content = @Content(schema = @Schema(implementation = Asset.class))),
         @ApiResponse(responseCode = "404", content = @Content),
       })
-  public Asset findById(@PathVariable(required = true) String id) {
+  public Asset findById(@PathVariable String id) {
     return assetService.getAssetById(id);
   }
 
@@ -76,7 +77,7 @@ public class AssetController {
             content = @Content(schema = @Schema(implementation = Asset.class))),
         @ApiResponse(responseCode = "404", content = @Content)
       })
-  public Asset update(@RequestBody(required = true) Asset asset) {
+  public Asset update(@RequestBody Asset asset) {
     return assetService.updateAsset(asset);
   }
 
@@ -88,7 +89,7 @@ public class AssetController {
         @ApiResponse(responseCode = "204", content = @Content),
         @ApiResponse(responseCode = "404", content = @Content)
       })
-  public void delete(@PathVariable(required = true) String id) {
+  public void delete(@PathVariable String id) {
     assetService.deleteAsset(id);
   }
 }

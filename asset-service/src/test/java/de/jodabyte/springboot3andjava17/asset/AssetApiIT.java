@@ -3,9 +3,10 @@ package de.jodabyte.springboot3andjava17.asset;
 import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import de.jodabyte.springboot3andjava17.common.validation.ValidationConstants;
 import de.jodabyte.springboot3andjava17.common.validation.ValidationErrorResponse;
 import de.jodabyte.springboot3andjava17.common.validation.Violation;
+import de.jodabyte.springboot3andjava17.core.asset.Asset;
+import de.jodabyte.springboot3andjava17.core.validation.ValidationConstants;
 import de.jodabyte.springboot3andjava17.test.AbstractIntegrationTest;
 import de.jodabyte.springboot3andjava17.test.DataFactory;
 import de.jodabyte.springboot3andjava17.test.IntegrationTestConfiguration;
@@ -92,13 +93,13 @@ class AssetApiIT extends AbstractIntegrationTest {
     // List<Violation> expected = Arrays.asList(new Violation("name",
     // messageSource.getMessage("validation.asset.name", null, null)),
     // new Violation("networkconfiguration",
-    // messageSource.getMessage("validation.asset.networkconfiguration", null, null)));
+    // messageSource.getMessage("validation.asset.networkConfiguration", null, null)));
     List<Violation> expected =
         Arrays.asList(
             new Violation("name", messageSource.getMessage("validation.asset.name", null, null)),
             new Violation(
                 "networkConfiguration",
-                messageSource.getMessage("validation.asset.networkconfiguration", null, null)));
+                messageSource.getMessage("validation.asset.networkConfiguration", null, null)));
 
     ResponseSpec response =
         webClient

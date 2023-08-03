@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.observability.MongoObservationCommandLis
 public class ObservabilityConfig {
 
   @Bean
-  MongoClientSettingsBuilderCustomizer mongoMetricsSynchronousContextProvider(
+  MongoClientSettingsBuilderCustomizer mongoDbMetricsSynchronousContextProvider(
       ObservationRegistry registry) {
     return clientSettingsBuilder ->
         clientSettingsBuilder

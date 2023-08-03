@@ -1,4 +1,4 @@
-package de.jodabyte.springboot3andjava17.asset;
+package de.jodabyte.springboot3andjava17.core.asset;
 
 import lombok.Getter;
 
@@ -6,9 +6,9 @@ import lombok.Getter;
 public enum NetworkConfigurationType {
   MQTT(Constants.MQTT);
 
-  private String type;
+  private final String type;
 
-  private NetworkConfigurationType(String type) {
+  NetworkConfigurationType(String type) {
     this.type = type;
   }
 

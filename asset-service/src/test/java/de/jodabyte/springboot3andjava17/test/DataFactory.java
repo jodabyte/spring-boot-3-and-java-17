@@ -1,7 +1,7 @@
 package de.jodabyte.springboot3andjava17.test;
 
-import de.jodabyte.springboot3andjava17.asset.Asset;
-import de.jodabyte.springboot3andjava17.asset.MqttNetworkConfiguration;
+import de.jodabyte.springboot3andjava17.core.asset.Asset;
+import de.jodabyte.springboot3andjava17.core.asset.MqttNetworkConfiguration;
 import java.util.List;
 import java.util.Random;
 import java.util.regex.Pattern;

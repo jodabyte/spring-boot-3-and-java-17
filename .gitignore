@@ -5,6 +5,7 @@ target/
 .mvn
 mvnw
 mvnw.cmd
+.flattened-pom.xml
 
 ### STS ###
 .apt_generated
@@ -17,3 +18,7 @@ mvnw.cmd
 
 ### VS Code ###
 .vscode/
+
+### IntelliJ ###
+.idea/
+springboot3-and-java17.iml

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 /**
  * Handles validation exceptions and maps them into {@link ValidationErrorResponse}.
  *
- * <p>How to extract datails from ConstraintViolationException:
+ * <p>How to extract details from ConstraintViolationException:
  *
  * @see <a href= "https://stackoverflow.com/q/50232456">
  *     how-to-find-out-whether-a-constraintviolation-is-from-a-json-property-or-from-a</a>
@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class ValidationExceptionHandler {
 
   /**
-   * A constraint violation during validation occured.
+   * A constraint violation during validation occurred.
    *
    * @param e contain constraint validation errors
    * @return A response with the failed validation details.

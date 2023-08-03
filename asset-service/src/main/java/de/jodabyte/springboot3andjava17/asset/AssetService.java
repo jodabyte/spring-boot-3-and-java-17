@@ -1,12 +1,14 @@
 package de.jodabyte.springboot3andjava17.asset;
 
-import de.jodabyte.springboot3andjava17.common.validation.ValidationConstants;
+import de.jodabyte.springboot3andjava17.core.asset.Asset;
+import de.jodabyte.springboot3andjava17.core.validation.ValidationConstants;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -15,11 +17,7 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class AssetService {
 
-  private AssetRepository assetRepository;
-
-  public AssetService(AssetRepository assetRepository) {
-    this.assetRepository = assetRepository;
-  }
+  @Autowired private AssetRepository assetRepository;
 
   public List<Asset> getAllAssets() {
     List<Asset> assets = assetRepository.findAll();

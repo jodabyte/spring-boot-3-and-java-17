@@ -1,4 +1,4 @@
-package de.jodabyte.springboot3andjava17.common.web;
+package de.jodabyte.springboot3andjava17.core.web;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
@@ -35,13 +35,13 @@ public class WebClientFactory {
             });
   }
 
-  public static <T> Mono<ResponseEntity<Void>> preparePostRequestWithoutResponse(
+  public static <T> Mono<ResponseEntity<Void>> preparePostRequest(
       WebClient client, String uri, T body) {
-    return preparePostRequestWithoutResponse(client, uri, HttpStatus.OK, body);
+    return preparePostRequest(client, uri, body, HttpStatus.OK);
   }
 
-  public static <T> Mono<ResponseEntity<Void>> preparePostRequestWithoutResponse(
-      WebClient client, String uri, HttpStatus responseStatus, T body) {
+  public static <T> Mono<ResponseEntity<Void>> preparePostRequest(
+      WebClient client, String uri, T body, HttpStatus responseStatus) {
     return client
         .post()
         .uri(uri)
@@ -51,6 +51,24 @@ public class WebClientFactory {
             response -> {
               if (response.statusCode().equals(responseStatus)) {
                 return response.toBodilessEntity();
+              } else {
+                return response.createException().flatMap(Mono::error);
+              }
+            });
+  }
+
+  public static <T> Mono<T> preparePutRequest(
+      WebClient client, String uri, T body, ParameterizedTypeReference<T> responseType) {
+    return client
+        .put()
+        .uri(uri)
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON)
+        .bodyValue(body)
+        .exchangeToMono(
+            response -> {
+              if (response.statusCode().equals(HttpStatus.OK)) {
+                return response.bodyToMono(responseType);
               } else {
                 return response.createException().flatMap(Mono::error);
               }

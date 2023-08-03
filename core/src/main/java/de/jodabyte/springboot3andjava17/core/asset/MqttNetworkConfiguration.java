@@ -1,4 +1,4 @@
-package de.jodabyte.springboot3andjava17.asset;
+package de.jodabyte.springboot3andjava17.core.asset;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,0 +1,8 @@
+application:
+  asset-service:
+    url: http://asset-service:8080
+
+spring:
+  data:
+    mongodb:
+      host: mongodb

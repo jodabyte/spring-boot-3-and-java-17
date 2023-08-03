@@ -1,21 +1,6 @@
-application:
-  version: '@project.version@'
-
-logging:
-  pattern:
-    level: '%5p [%X{traceId:-}:%X{spanId:-}]'
-
 spring:
-  profiles:
-    active: local
-  application:
-    name: '@project.name@'
-  output:
-      ansi:
-        enabled: always
-  data:
-    mongodb:
-      database: app-data
+  config:
+    import: application-core.yml
 
 springdoc:
   default-produces-media-type: application/json

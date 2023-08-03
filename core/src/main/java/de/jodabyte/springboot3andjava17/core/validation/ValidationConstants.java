@@ -1,4 +1,4 @@
-package de.jodabyte.springboot3andjava17.common.validation;
+package de.jodabyte.springboot3andjava17.core.validation;
 
 public final class ValidationConstants {
 
