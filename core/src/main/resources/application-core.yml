@@ -1,7 +1,5 @@
 application:
   version: '@project.version@'
-  asset-service:
-    url: http://localhost:8080
 
 logging:
   pattern:
@@ -17,5 +15,4 @@ spring:
       enabled: always
   data:
     mongodb:
-      host: localhost
-      database: test-data
+      database: app-data

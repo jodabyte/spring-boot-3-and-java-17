@@ -6,8 +6,6 @@ import jakarta.annotation.PostConstruct;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -32,11 +30,14 @@ public class AssetServiceClient {
     return exchange.block();
   }
 
-  public void createAsset(Asset asset) {
-    Mono<ResponseEntity<Void>> exchange =
+  public Asset createAsset(Asset asset) {
+    Mono<Asset> exchange =
         WebClientFactory.preparePostRequest(
-            client, UriContract.ASSET_SERVICE.getUriPath(), asset, HttpStatus.CREATED);
-    exchange.block();
+            client,
+            UriContract.ASSET_SERVICE.getUriPath(),
+            asset,
+            new ParameterizedTypeReference<>() {});
+    return exchange.block();
   }
 
   public Asset updateAsset(Asset asset) {

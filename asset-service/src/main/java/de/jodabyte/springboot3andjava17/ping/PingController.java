@@ -20,15 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Ping", description = "Service availability and info")
 public class PingController {
 
+  @Value("${spring.application.name:}")
   private String serviceName;
-  private String serviceVersion;
 
-  public PingController(
-      @Value("${spring.application.name:}") String serviceName,
-      @Value("${application.version:}") String serviceVersion) {
-    this.serviceName = serviceName;
-    this.serviceVersion = serviceVersion;
-  }
+  @Value("${application.version:}")
+  private String serviceVersion;
 
   @GetMapping("/ping")
   @Operation(

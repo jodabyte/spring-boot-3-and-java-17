@@ -1,8 +1,0 @@
-{
-  "properties": [
-    {
-      "name": "application.version",
-      "type": "java.lang.String"
-    }
-  ]
-}

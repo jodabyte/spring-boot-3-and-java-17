@@ -57,6 +57,24 @@ public class WebClientFactory {
             });
   }
 
+  public static <T> Mono<T> preparePostRequest(
+      WebClient client, String uri, T body, ParameterizedTypeReference<T> responseType) {
+    return client
+        .post()
+        .uri(uri)
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON)
+        .bodyValue(body)
+        .exchangeToMono(
+            response -> {
+              if (response.statusCode().equals(HttpStatus.CREATED)) {
+                return response.bodyToMono(responseType);
+              } else {
+                return response.createException().flatMap(Mono::error);
+              }
+            });
+  }
+
   public static <T> Mono<T> preparePutRequest(
       WebClient client, String uri, T body, ParameterizedTypeReference<T> responseType) {
     return client

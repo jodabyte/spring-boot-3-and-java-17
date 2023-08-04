@@ -1,0 +1,11 @@
+spring:
+  config:
+    import: application-core.yml
+
+mqtt:
+  host: homeassistant
+  port: 1883
+  clientId: ${spring.application.name}
+  username: spring-app
+  password: 1q2w3e
+
