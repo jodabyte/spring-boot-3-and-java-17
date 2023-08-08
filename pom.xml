@@ -34,7 +34,7 @@
     <maven-checkstyle-plugin.version>3.3.0</maven-checkstyle-plugin.version>
     <sonar-maven-plugin.version>3.9.1.2184</sonar-maven-plugin.version>
     <spotless-maven-plugin.version>2.38.0 </spotless-maven-plugin.version>
-    <springdoc.version>2.1.0</springdoc.version>
+    <springdoc.version>2.2.0</springdoc.version>
   </properties>
 
   <profiles>
