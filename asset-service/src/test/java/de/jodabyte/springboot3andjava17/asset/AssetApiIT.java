@@ -3,13 +3,12 @@ package de.jodabyte.springboot3andjava17.asset;
 import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import de.jodabyte.springboot3andjava17.ContainerizedTest;
 import de.jodabyte.springboot3andjava17.common.validation.ValidationErrorResponse;
 import de.jodabyte.springboot3andjava17.common.validation.Violation;
 import de.jodabyte.springboot3andjava17.core.asset.Asset;
 import de.jodabyte.springboot3andjava17.core.validation.ValidationConstants;
-import de.jodabyte.springboot3andjava17.test.AbstractIntegrationTest;
-import de.jodabyte.springboot3andjava17.test.DataFactory;
-import de.jodabyte.springboot3andjava17.test.IntegrationTestConfiguration;
+import de.jodabyte.springboot3andjava17.test.data.DataFactory;
 import java.util.Arrays;
 import java.util.List;
 import org.assertj.core.api.InstanceOfAssertFactories;
@@ -19,15 +18,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Import(IntegrationTestConfiguration.class)
-class AssetApiIT extends AbstractIntegrationTest {
+class AssetApiIT extends ContainerizedTest {
 
   @Autowired private WebTestClient webClient;
 

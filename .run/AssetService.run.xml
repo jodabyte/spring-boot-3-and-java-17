@@ -1,0 +1,15 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="AssetService" type="Application" factoryName="Application">
+    <option name="ALTERNATIVE_JRE_PATH" value="temurin-17" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+    <envs>
+      <env name="spring_profiles_active" value="local" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="de.jodabyte.springboot3andjava17.AssetServiceApplication" />
+    <module name="asset-service" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/asset-service" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

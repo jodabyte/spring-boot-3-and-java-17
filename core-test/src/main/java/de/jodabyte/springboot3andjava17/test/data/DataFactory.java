@@ -1,4 +1,4 @@
-package de.jodabyte.springboot3andjava17.test;
+package de.jodabyte.springboot3andjava17.test.data;
 
 import de.jodabyte.springboot3andjava17.core.asset.Asset;
 import de.jodabyte.springboot3andjava17.core.asset.MqttNetworkConfiguration;

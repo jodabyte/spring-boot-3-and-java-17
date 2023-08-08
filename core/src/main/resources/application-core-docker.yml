@@ -5,4 +5,4 @@ application:
 spring:
   data:
     mongodb:
-      host: mongodb
+      host: mongo
