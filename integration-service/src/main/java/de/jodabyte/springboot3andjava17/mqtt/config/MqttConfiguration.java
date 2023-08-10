@@ -23,24 +23,32 @@ public class MqttConfiguration {
   @Autowired private MqttProperties properties;
 
   @Bean
-  public MqttPahoClientFactory mqttClientFactory() {
+  public MqttConnectOptions mqttConnectOptions() {
     log.info("MqttProperties: {}", properties);
     MqttConnectOptions options = new MqttConnectOptions();
     options.setServerURIs(
         new String[] {String.format("tcp://%s:%d", properties.getHost(), properties.getPort())});
     options.setUserName(properties.getUsername());
     options.setPassword(properties.getPasswordAsCharArray());
+    options.setCleanSession(true);
+    options.setAutomaticReconnect(true);
+    return options;
+  }
+
+  @Bean
+  public MqttPahoClientFactory mqttClientFactory(MqttConnectOptions mqttConnectOptions) {
     DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
-    factory.setConnectionOptions(options);
-    log.info("MqttConnectOptions: {}", options);
+    factory.setConnectionOptions(mqttConnectOptions);
+    log.info("MqttConnectOptions: {}", mqttConnectOptions);
     return factory;
   }
 
   @Bean
-  public MqttPahoMessageDrivenChannelAdapter mqttInboundAdapter() {
+  public MqttPahoMessageDrivenChannelAdapter mqttInboundAdapter(
+      MqttPahoClientFactory mqttPahoClientFactory) {
     MqttPahoMessageDrivenChannelAdapter adapter =
         new MqttPahoMessageDrivenChannelAdapter(
-            properties.getClientId(), mqttClientFactory(), properties.getAllInitialTopics());
+            properties.getClientId(), mqttPahoClientFactory, properties.getAllInitialTopics());
     adapter.setConverter(new DefaultPahoMessageConverter());
     adapter.setQos(0);
     adapter.setOutputChannel(mqttInputChannel());

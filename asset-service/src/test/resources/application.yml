@@ -1,3 +1,7 @@
 spring:
   config:
-    import: classpath:application-core.yml
+    import: classpath:application-core-test.yml
+  data:
+    mongodb:
+      host: localhost
+      database: test-data

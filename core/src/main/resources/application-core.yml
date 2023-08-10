@@ -1,6 +1,13 @@
 application:
   version: '@project.version@'
 
+mqtt:
+  host: homeassistant
+  port: 1883
+  clientId: ${spring.application.name}
+  username: @mqtt.username@
+  password: @mqtt.password@
+
 logging:
   pattern:
     level: '%5p [%X{traceId:-}:%X{spanId:-}]'
@@ -13,6 +20,3 @@ spring:
   output:
     ansi:
       enabled: always
-  data:
-    mongodb:
-      database: app-data

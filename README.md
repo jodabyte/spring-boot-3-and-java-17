@@ -38,6 +38,10 @@ Spring Boot 3 and Java 17 powered things.
 - Docker
 
 # Getting Startet
+## Set credentials
+Create the file credentials.properties in project directory with the following properties:
+- mqtt.username
+- mqtt.password
 ## Build Docker Image
 `spring-boot:build-image`
 ## Deploy locally

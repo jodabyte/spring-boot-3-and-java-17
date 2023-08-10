@@ -23,3 +23,6 @@ mvnw.cmd
 .idea/*
 !.idea/runConfigurations/
 springboot3-and-java17.iml
+
+### Project ###
+credentials.properties

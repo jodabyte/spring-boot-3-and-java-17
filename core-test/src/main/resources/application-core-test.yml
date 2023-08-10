@@ -3,6 +3,13 @@ application:
   asset-service:
     url: http://localhost:8080
 
+mqtt:
+  host: localhost
+  port: 1883
+  clientId: ${spring.application.name}
+  username:
+  password:
+
 logging:
   pattern:
     level: '%5p [%X{traceId:-}:%X{spanId:-}]'
@@ -15,7 +22,3 @@ spring:
   output:
     ansi:
       enabled: always
-  data:
-    mongodb:
-      host: localhost
-      database: test-data

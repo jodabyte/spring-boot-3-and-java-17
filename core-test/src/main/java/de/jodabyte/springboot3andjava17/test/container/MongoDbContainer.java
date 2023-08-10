@@ -11,5 +11,5 @@ public interface MongoDbContainer {
   MongoDBContainer MONGODB =
       new MongoDBContainer(
           DockerImageName.parse(TestContainerContract.MONGODB_IMAGE)
-              .asCompatibleSubstituteFor("mongo"));
+              .asCompatibleSubstituteFor(TestContainerContract.MONGODB_NAME));
 }

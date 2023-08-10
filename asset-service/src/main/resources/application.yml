@@ -1,6 +1,9 @@
 spring:
   config:
     import: application-core.yml
+  data:
+    mongodb:
+      database: app-data
 
 springdoc:
   default-produces-media-type: application/json

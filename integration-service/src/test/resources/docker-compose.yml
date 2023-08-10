@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  mongo:
+    image: mongodb/mongodb-community-server:6.0.8-ubi8
+  mosquitto:
+    image: eclipse-mosquitto:2.0.15-openssl
+    command: mosquitto -c /mosquitto-no-auth.conf
+  asset-service:
+    image: asset-service:@project.version@
+    depends_on:
+      mongo:
+        condition: service_started
+      mosquitto:
+        condition: service_started
