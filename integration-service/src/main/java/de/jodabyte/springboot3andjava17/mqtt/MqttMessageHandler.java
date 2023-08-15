@@ -1,6 +1,5 @@
 package de.jodabyte.springboot3andjava17.mqtt;
 
-import de.jodabyte.springboot3andjava17.mqtt.zigbee2mqtt.Zigbee2MqttHandler;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -14,12 +13,12 @@ import org.springframework.messaging.MessagingException;
 @Slf4j
 public class MqttMessageHandler implements MessageHandler {
 
-  private static final String HEADER_TOPIC = "mqtt_receivedTopic";
+  public static final String HEADER_TOPIC = "mqtt_receivedTopic";
 
   private final List<AbstractHandler> handlers;
 
-  public MqttMessageHandler(Zigbee2MqttHandler zigbee2MqttHandler) {
-    handlers = Arrays.asList(zigbee2MqttHandler);
+  public MqttMessageHandler(AbstractHandler... handler) {
+    handlers = Arrays.asList(handler);
   }
 
   @Override

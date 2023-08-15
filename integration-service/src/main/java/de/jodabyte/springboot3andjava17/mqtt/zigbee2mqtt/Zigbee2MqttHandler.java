@@ -58,7 +58,7 @@ public class Zigbee2MqttHandler extends AbstractHandler {
 
     updateAssetCache();
     List<BridgeDevice> supportedDevices = getSupportedDevices(devices);
-    unsubscribeFromRemovedDevices(supportedDevices);
+    disableRemovedDevices(supportedDevices);
     createAssetsFromUnknownDevices(supportedDevices);
     updateMqttSubscription();
   }
@@ -76,7 +76,7 @@ public class Zigbee2MqttHandler extends AbstractHandler {
     return ListUtils.emptyIfNull(devices).stream().filter(BridgeDevice::isSupported).toList();
   }
 
-  private void unsubscribeFromRemovedDevices(List<BridgeDevice> devices) {
+  private void disableRemovedDevices(List<BridgeDevice> devices) {
     this.assetCache.stream()
         .filter(
             asset ->
@@ -89,14 +89,14 @@ public class Zigbee2MqttHandler extends AbstractHandler {
     ((MqttNetworkConfiguration) asset.getNetworkConfiguration()).setEnabled(false);
     Asset updatedAsset = assetServiceClient.updateAsset(asset);
     this.assetCache.set(this.assetCache.indexOf(asset), updatedAsset);
-    log.debug("Disable asset={}", updatedAsset.getName());
+    log.info("Disable asset={}", updatedAsset.getName());
   }
 
   private void createAssetsFromUnknownDevices(List<BridgeDevice> devices) {
     devices.stream()
         .filter(
             device ->
-                assetCache.stream()
+                this.assetCache.stream()
                     .noneMatch(asset -> asset.getName().equals(device.getFriendlyName())))
         .forEach(this::createAsset);
   }
@@ -109,17 +109,35 @@ public class Zigbee2MqttHandler extends AbstractHandler {
                 String.format(TOPIC_FORMAT, device.getFriendlyName()), true));
     Asset asset = assetServiceClient.createAsset(assetDto);
     this.assetCache.add(asset);
-    log.debug("Created asset from device={}", device.getFriendlyName());
+    log.info("Created asset from device={}", device.getFriendlyName());
   }
 
   private void updateMqttSubscription() {
     this.assetCache.stream()
         .map(Asset::getNetworkConfiguration)
         .filter(config -> config.getType().equals(NetworkConfigurationType.MQTT))
+        .filter(config -> !((MqttNetworkConfiguration) config).isEnabled())
+        .map(config -> ((MqttNetworkConfiguration) config).getTopic())
+        .forEach(
+            topic -> {
+              if (Arrays.asList(this.mqttInboundClient.getTopic()).contains(topic)) {
+                log.info("removeTopic={}", topic);
+                this.mqttInboundClient.removeTopic(topic);
+              }
+            });
+
+    this.assetCache.stream()
+        .map(Asset::getNetworkConfiguration)
+        .filter(config -> config.getType().equals(NetworkConfigurationType.MQTT))
+        .filter(config -> ((MqttNetworkConfiguration) config).isEnabled())
         .map(config -> ((MqttNetworkConfiguration) config).getTopic())
         .filter(
             topic ->
                 Arrays.stream(this.mqttInboundClient.getTopic()).noneMatch(t -> t.equals(topic)))
-        .forEach(topic -> this.mqttInboundClient.addTopic(topic));
+        .forEach(
+            topic -> {
+              log.info("addTopic={}", topic);
+              this.mqttInboundClient.addTopic(topic);
+            });
   }
 }

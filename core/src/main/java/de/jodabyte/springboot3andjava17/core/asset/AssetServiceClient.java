@@ -6,6 +6,7 @@ import jakarta.annotation.PostConstruct;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -15,6 +16,9 @@ public class AssetServiceClient {
 
   @Value("${application.asset-service.url}")
   private String assetServiceUrl;
+
+  private static final String URI_PATH = "/assets";
+  private static final String URI_PATH_WITH_VARIABLE = String.format("%s/%s", URI_PATH, "{id}");
 
   private WebClient client;
 
@@ -48,5 +52,11 @@ public class AssetServiceClient {
             asset,
             new ParameterizedTypeReference<>() {});
     return exchange.block();
+  }
+
+  public void deleteAsset(Asset asset) {
+    Mono<ResponseEntity<Void>> exchange =
+        WebClientFactory.prepareDeleteRequest(client, URI_PATH_WITH_VARIABLE, asset.getId());
+    exchange.block();
   }
 }

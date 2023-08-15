@@ -14,11 +14,12 @@ import org.springframework.integration.mqtt.core.MqttPahoClientFactory;
 import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
 import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
 import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.MessageHandler;
 
 @Slf4j
 @Configuration
 public class MqttConfiguration {
+
+  private static final String CLIENT_ID_FORMAT = "%s-%d";
 
   @Autowired private MqttProperties properties;
 
@@ -32,6 +33,7 @@ public class MqttConfiguration {
     options.setPassword(properties.getPasswordAsCharArray());
     options.setCleanSession(true);
     options.setAutomaticReconnect(true);
+    log.info("MqttConnectOptions: {}", options);
     return options;
   }
 
@@ -39,19 +41,20 @@ public class MqttConfiguration {
   public MqttPahoClientFactory mqttClientFactory(MqttConnectOptions mqttConnectOptions) {
     DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
     factory.setConnectionOptions(mqttConnectOptions);
-    log.info("MqttConnectOptions: {}", mqttConnectOptions);
     return factory;
   }
 
   @Bean
   public MqttPahoMessageDrivenChannelAdapter mqttInboundAdapter(
       MqttPahoClientFactory mqttPahoClientFactory) {
+    String clientId = String.format(CLIENT_ID_FORMAT, properties.getClientId(), System.nanoTime());
     MqttPahoMessageDrivenChannelAdapter adapter =
         new MqttPahoMessageDrivenChannelAdapter(
-            properties.getClientId(), mqttPahoClientFactory, properties.getAllInitialTopics());
+            clientId, mqttPahoClientFactory, properties.getAllInitialTopics());
     adapter.setConverter(new DefaultPahoMessageConverter());
     adapter.setQos(0);
     adapter.setOutputChannel(mqttInputChannel());
+    log.info("MqttPahoMessageDrivenChannelAdapter clientId: {}", clientId);
     return adapter;
   }
 
@@ -62,7 +65,7 @@ public class MqttConfiguration {
 
   @Bean
   @ServiceActivator(inputChannel = "mqttInputChannel")
-  public MessageHandler mqttMessageHandler(Zigbee2MqttHandler zigbee2MqttHandler) {
+  public MqttMessageHandler mqttMessageHandler(Zigbee2MqttHandler zigbee2MqttHandler) {
     return new MqttMessageHandler(zigbee2MqttHandler);
   }
 }

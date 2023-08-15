@@ -15,7 +15,7 @@ class PingApiIT extends ContainerizedTest {
   @Autowired private WebTestClient webClient;
 
   @Test
-  void Ping_Call_Ok() throws Exception {
+  void Ping_Call_Ok() {
     ResponseSpec response = webClient.get().uri("/ping").exchange();
     response.expectStatus().isOk();
 

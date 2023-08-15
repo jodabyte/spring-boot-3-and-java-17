@@ -6,8 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 
-@SpringBootTest
-public class IntegrationServiceApplicationTests extends ContainerizedTest {
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+class IntegrationServiceApplicationTests extends ContainerizedTest {
 
   @Test
   void ApplicationContext_LoadContext_ContextIsNotNull(ApplicationContext context) {

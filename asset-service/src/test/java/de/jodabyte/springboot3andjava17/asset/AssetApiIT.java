@@ -35,7 +35,7 @@ class AssetApiIT extends ContainerizedTest {
   @Autowired private DataFactory dataFactory;
 
   @Test
-  void All_GetAllAssets_ReturnsAllAssets() throws Exception {
+  void All_GetAllAssets_ReturnsAllAssets() {
     List<Asset> expected = assetRepository.saveAll(dataFactory.createAssets(5));
 
     ResponseSpec response =
@@ -47,7 +47,7 @@ class AssetApiIT extends ContainerizedTest {
   }
 
   @Test
-  void Create_SaveAsset_ReturnIsCreated() throws Exception {
+  void Create_SaveAsset_ReturnIsCreated() {
     Asset expected = dataFactory.createAsset();
 
     ResponseSpec response =
@@ -68,7 +68,7 @@ class AssetApiIT extends ContainerizedTest {
   }
 
   @Test
-  void Create_EmptyRequestBody_ReturnBadRequest() throws Exception {
+  void Create_EmptyRequestBody_ReturnBadRequest() {
     String requestBody = "";
 
     ResponseSpec response =
@@ -85,12 +85,8 @@ class AssetApiIT extends ContainerizedTest {
   }
 
   @Test
-  void Create_RequiredAssetPropertiesAreEmpty_ReturnBadRequest() throws Exception {
+  void Create_RequiredAssetPropertiesAreEmpty_ReturnBadRequest() {
     Asset invalidAsset = new Asset();
-    // List<Violation> expected = Arrays.asList(new Violation("name",
-    // messageSource.getMessage("validation.asset.name", null, null)),
-    // new Violation("networkconfiguration",
-    // messageSource.getMessage("validation.asset.networkConfiguration", null, null)));
     List<Violation> expected =
         Arrays.asList(
             new Violation("name", messageSource.getMessage("validation.asset.name", null, null)),
@@ -117,7 +113,7 @@ class AssetApiIT extends ContainerizedTest {
   }
 
   @Test
-  void FindById_GetAsset_ReturnAsset() throws Exception {
+  void FindById_GetAsset_ReturnAsset() {
     Asset expected = assetRepository.save(dataFactory.createAsset());
 
     ResponseSpec response =
@@ -133,7 +129,7 @@ class AssetApiIT extends ContainerizedTest {
   }
 
   @Test
-  void FindById_InvalidId_ReturnBadRequest() throws Exception {
+  void FindById_InvalidId_ReturnBadRequest() {
     String invalidId = "1q2w3e4r";
     Violation expected =
         new Violation("id", messageSource.getMessage("validation.asset.id", null, null));
@@ -155,7 +151,7 @@ class AssetApiIT extends ContainerizedTest {
   }
 
   @Test
-  void FindById_UnknownId_ReturnNotFound() throws Exception {
+  void FindById_UnknownId_ReturnNotFound() {
     String unknownId = ObjectId.get().toString();
 
     ResponseSpec response =
@@ -170,7 +166,7 @@ class AssetApiIT extends ContainerizedTest {
   }
 
   @Test
-  void Update_UpdateAsset_ReturnAsset() throws Exception {
+  void Update_UpdateAsset_ReturnAsset() {
     Asset expected = assetRepository.save(dataFactory.createAsset());
     expected.setName(dataFactory.createAssetName());
     expected.setNetworkConfiguration(dataFactory.createMqttNetworkConfiguration());
@@ -190,7 +186,7 @@ class AssetApiIT extends ContainerizedTest {
   }
 
   @Test
-  void Update_EmptyRequestBody_ReturnBadRequest() throws Exception {
+  void Update_EmptyRequestBody_ReturnBadRequest() {
     ResponseSpec response =
         webClient
             .put()
@@ -204,7 +200,7 @@ class AssetApiIT extends ContainerizedTest {
   }
 
   @Test
-  void Update_UnknownAsset_ReturnNotFound() throws Exception {
+  void Update_UnknownAsset_ReturnNotFound() {
     Asset expected = dataFactory.createAsset();
     expected.setId((ObjectId.get().toString()));
 
@@ -222,7 +218,7 @@ class AssetApiIT extends ContainerizedTest {
   }
 
   @Test
-  void Delete_DeleteAsset_ReturnNoContent() throws Exception {
+  void Delete_DeleteAsset_ReturnNoContent() {
     Asset expected = assetRepository.save(dataFactory.createAsset());
 
     ResponseSpec response =
@@ -236,7 +232,7 @@ class AssetApiIT extends ContainerizedTest {
   }
 
   @Test
-  void Delete_InvalidId_ReturnBadRequest() throws Exception {
+  void Delete_InvalidId_ReturnBadRequest() {
     String invalidId = "1q2w3e4r";
     Violation expected =
         new Violation("id", messageSource.getMessage("validation.asset.id", null, null));
@@ -258,7 +254,7 @@ class AssetApiIT extends ContainerizedTest {
   }
 
   @Test
-  void Delete_DeleteAsset_ReturnNotFound() throws Exception {
+  void Delete_DeleteAsset_ReturnNotFound() {
     String unknownId = ObjectId.get().toString();
 
     ResponseSpec response =

@@ -1,5 +1,6 @@
 package de.jodabyte.springboot3andjava17.core.web;
 
+import java.util.Arrays;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -87,6 +88,22 @@ public class WebClientFactory {
             response -> {
               if (response.statusCode().equals(HttpStatus.OK)) {
                 return response.bodyToMono(responseType);
+              } else {
+                return response.createException().flatMap(Mono::error);
+              }
+            });
+  }
+
+  public static <T> Mono<ResponseEntity<Void>> prepareDeleteRequest(
+      WebClient client, String uri, String... uriVariable) {
+    return client
+        .delete()
+        .uri(uri, Arrays.stream(uriVariable).toArray())
+        .accept(MediaType.APPLICATION_JSON)
+        .exchangeToMono(
+            response -> {
+              if (response.statusCode().equals(HttpStatus.NO_CONTENT)) {
+                return response.toBodilessEntity();
               } else {
                 return response.createException().flatMap(Mono::error);
               }
