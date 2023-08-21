@@ -1,5 +1,6 @@
 package de.jodabyte.springboot3andjava17.ping;
 
+import de.jodabyte.springboot3andjava17.core.asset.Ping;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,7 +12,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,10 +32,7 @@ public class PingController {
       responses =
           @ApiResponse(
               responseCode = "200",
-              content =
-                  @Content(
-                      mediaType = MediaType.APPLICATION_JSON_VALUE,
-                      schema = @Schema(implementation = Ping.class))))
+              content = @Content(schema = @Schema(implementation = Ping.class))))
   public Ping ping() {
     var ping =
         new Ping(

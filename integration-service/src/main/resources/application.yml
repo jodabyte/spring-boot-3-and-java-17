@@ -1,3 +1,9 @@
 spring:
   config:
     import: application-core.yml
+  application:
+    name: '@project.name@'
+  docker:
+    compose:
+      file: @docker-compose-path@
+

@@ -3,11 +3,20 @@ version: "3.9"
 services:
   mongo:
     image: @docker-image-mongodb@
+    container_name: mongo
+    ports:
+      - "27017:27017"
   mosquitto:
     image: @docker-image-mosquitto@
     command: mosquitto -c /mosquitto-no-auth.conf
+    container_name: mosquitto
+    ports:
+      - "1883:1883"
   asset-service:
     image: asset-service:@project.version@
+    container_name: asset-service
+    ports:
+      - "8080:8080"
     depends_on:
       mongo:
         condition: service_started

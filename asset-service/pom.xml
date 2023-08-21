@@ -29,6 +29,48 @@
         <spring.profiles.active>local</spring.profiles.active>
       </properties>
     </profile>
+    <profile>
+      <id>api-spec</id>
+      <properties>
+        <spring.profiles.active>api-spec,local</spring.profiles.active>
+        <maven.test.skip>true</maven.test.skip>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <configuration>
+              <!-- springdoc-openapi-maven-plugin -->
+              <jvmArguments>-Dspring.application.admin.enabled=true</jvmArguments>
+            </configuration>
+            <executions>
+              <!-- springdoc-openapi-maven-plugin -->
+              <execution>
+                <id>pre-integration-test</id>
+                <goals>
+                  <goal>start</goal>
+                </goals>
+              </execution>
+              <!-- springdoc-openapi-maven-plugin -->
+              <execution>
+                <id>post-integration-test</id>
+                <goals>
+                  <goal>stop</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-maven-plugin</artifactId>
+            <configuration>
+              <outputDir>${project.parent.basedir}\${openapi-spec-root-directory}</outputDir>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 
   <build>
@@ -40,6 +82,10 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <!-- build-image createdDate -->
+          <createdDate>now</createdDate>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -56,6 +102,9 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <suppressionsLocation>${project.parent.basedir}${checkstyle-suppressions-path}</suppressionsLocation>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.sonarsource.scanner.maven</groupId>
@@ -80,6 +129,11 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-docker-compose</artifactId>
+      <optional>true</optional>
     </dependency>
 
     <dependency>
@@ -124,11 +178,6 @@
       <groupId>org.testcontainers</groupId>
       <artifactId>mongodb</artifactId>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-docker-compose</artifactId>
-      <optional>true</optional>
     </dependency>
 
     <dependency>

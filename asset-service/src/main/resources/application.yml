@@ -1,6 +1,8 @@
 spring:
   config:
     import: application-core.yml
+  application:
+    name: '@project.name@'
   data:
     mongodb:
       database: app-data

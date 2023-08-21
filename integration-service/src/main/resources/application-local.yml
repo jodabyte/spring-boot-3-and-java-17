@@ -1,13 +1,9 @@
-spring:
-  config:
-    import: classpath:application-core-test.yml
-
 application:
   asset-service:
     url: http://localhost:8080
 
 mqtt:
-  host: localhost
+  host: homeassistant
   port: 1883
   clientId: ${spring.application.name}
   username: @mqtt.username@

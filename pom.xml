@@ -19,6 +19,7 @@
     <module>core</module>
     <module>core-test</module>
     <module>asset-service</module>
+    <module>asset-service-api</module>
     <module>integration-service</module>
   </modules>
 
@@ -28,14 +29,28 @@
     <java.version>17</java.version>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
+
     <apache-commons-collections.version>4.4</apache-commons-collections.version>
     <datafaker.version>2.0.1</datafaker.version>
     <flatten-maven-plugin.version>1.5.0</flatten-maven-plugin.version>
     <maven-checkstyle-plugin.version>3.3.0</maven-checkstyle-plugin.version>
+    <openapi-generator-maven-plugin.version>6.6.0</openapi-generator-maven-plugin.version>
+    <openapi-jackson-databind-nullable.version>0.2.6</openapi-jackson-databind-nullable.version>
     <properties-maven-plugin.version>1.2.0</properties-maven-plugin.version>
     <sonar-maven-plugin.version>3.9.1.2184</sonar-maven-plugin.version>
     <spotless-maven-plugin.version>2.38.0 </spotless-maven-plugin.version>
-    <springdoc.version>2.2.0</springdoc.version>
+    <springdoc-openapi-starter-webmvc-ui.version>2.2.0</springdoc-openapi-starter-webmvc-ui.version>
+    <springdoc-openapi-maven-plugin.version>1.4</springdoc-openapi-maven-plugin.version>
+    <swagger-core-jakarta.version>2.2.15</swagger-core-jakarta.version>
+
+    <checkstyle-suppressions-path>\checkstyle\checkstyle-suppressions.xml</checkstyle-suppressions-path>
+
+    <openapi-spec-root-directory>openapi</openapi-spec-root-directory>
+    <openapi-spec-asset-service>asset-service.json</openapi-spec-asset-service>
+
+    <docker-compose-path>${project.build.outputDirectory}\docker-compose.yml</docker-compose-path>
+    <docker-image-mongodb>mongodb/mongodb-community-server:6.0.8-ubi8</docker-image-mongodb>
+    <docker-image-mosquitto>eclipse-mosquitto:2.0.15-openssl</docker-image-mosquitto>
   </properties>
 
   <profiles>
@@ -55,93 +70,120 @@
         <spring.profiles.active>local</spring.profiles.active>
       </properties>
     </profile>
+    <profile>
+      <id>api-spec</id>
+      <properties>
+        <spring.profiles.active>api-spec,local</spring.profiles.active>
+        <maven.test.skip>true</maven.test.skip>
+      </properties>
+    </profile>
   </profiles>
 
   <build>
+    <plugins>
+      <plugin>
+        <!-- generates a flattened version of the pom.xml,
+        is needed for https://maven.apache.org/maven-ci-friendly.html#install-deploy -->
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>flatten-maven-plugin</artifactId>
+        <version>${flatten-maven-plugin.version}</version>
+        <configuration>
+          <updatePomFile>true</updatePomFile>
+          <flattenMode>resolveCiFriendliesOnly</flattenMode>
+        </configuration>
+        <executions>
+          <execution>
+            <id>flatten</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>flatten</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>flatten.clean</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+              <version>${lombok.version}</version>
+            </path>
+          </annotationProcessorPaths>
+        </configuration>
+      </plugin>
+      <plugin> <!-- Code formatting -->
+        <groupId>com.diffplug.spotless</groupId>
+        <artifactId>spotless-maven-plugin</artifactId>
+        <version>${spotless-maven-plugin.version}</version>
+        <configuration>
+          <java>
+            <googleJavaFormat>
+              <groupArtifact>com.google.googlejavaformat:google-java-format</groupArtifact>
+            </googleJavaFormat>
+          </java>
+        </configuration>
+      </plugin>
+      <plugin> <!-- SonarQube analysis -->
+        <groupId>org.sonarsource.scanner.maven</groupId>
+        <artifactId>sonar-maven-plugin</artifactId>
+        <version>${sonar-maven-plugin.version}</version>
+      </plugin>
+    </plugins>
+
     <pluginManagement>
       <plugins>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>flatten-maven-plugin</artifactId>
-          <version>${flatten-maven-plugin.version}</version>
-          <configuration>
-            <updatePomFile>true</updatePomFile>
-            <flattenMode>resolveCiFriendliesOnly</flattenMode>
-          </configuration>
+        <plugin> <!-- spring boot -->
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
+        </plugin>
+        <plugin> <!-- openapi spec generator -->
+          <groupId>org.springdoc</groupId>
+          <artifactId>springdoc-openapi-maven-plugin</artifactId>
+          <version>${springdoc-openapi-maven-plugin.version}</version>
           <executions>
             <execution>
-              <id>flatten</id>
-              <phase>process-resources</phase>
+              <id>integration-test</id>
               <goals>
-                <goal>flatten</goal>
-              </goals>
-            </execution>
-            <execution>
-              <id>flatten.clean</id>
-              <phase>clean</phase>
-              <goals>
-                <goal>clean</goal>
+                <goal>generate</goal>
               </goals>
             </execution>
           </executions>
-        </plugin>
-        <plugin>
-          <groupId>org.springframework.boot</groupId>
-          <artifactId>spring-boot-maven-plugin</artifactId>
           <configuration>
-            <createdDate>now</createdDate>
+            <outputFileName>${project.artifactId}.json</outputFileName>
           </configuration>
         </plugin>
-        <!-- Code generation -->
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <configuration>
-            <source>${java.version}</source>
-            <target>${java.version}</target>
-            <annotationProcessorPaths>
-              <path>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>${lombok.version}</version>
-              </path>
-            </annotationProcessorPaths>
-          </configuration>
-        </plugin>
-        <plugin>
+        <plugin> <!-- unit tests -->
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <configuration>
             <forkedProcessExitTimeoutInSeconds>120</forkedProcessExitTimeoutInSeconds>
           </configuration>
         </plugin>
-        <!--
-        Integration tests -->
-        <plugin>
+        <plugin> <!-- integration tests -->
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
           <version>${maven-failsafe-plugin.version}</version>
-        </plugin>        <!-- Coding standard -->
-        <plugin>
-          <groupId>com.diffplug.spotless</groupId>
-          <artifactId>spotless-maven-plugin</artifactId>
-          <version>${spotless-maven-plugin.version}</version>
-          <configuration>
-            <java>
-              <googleJavaFormat>
-                <groupArtifact>com.google.googlejavaformat:google-java-format</groupArtifact>
-              </googleJavaFormat>
-            </java>
-          </configuration>
         </plugin>
-        <plugin>
+        <plugin> <!-- static code analysis  -->
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
           <version>${maven-checkstyle-plugin.version}</version>
           <configuration>
             <configLocation>google_checks.xml</configLocation>
             <violationSeverity>warning</violationSeverity>
-            <suppressionsLocation>..\checkstyle\checkstyle-suppressions.xml</suppressionsLocation>
+            <suppressionsLocation>${project.basedir}${checkstyle-suppressions-path}</suppressionsLocation>
           </configuration>
           <executions>
             <execution>
@@ -152,17 +194,20 @@
             </execution>
           </executions>
         </plugin>
-        <plugin>
-          <groupId>org.sonarsource.scanner.maven</groupId>
-          <artifactId>sonar-maven-plugin</artifactId>
-          <version>${sonar-maven-plugin.version}</version>
-        </plugin>
       </plugins>
     </pluginManagement>
+
     <resources>
       <resource>
           <directory>src/main/resources</directory>
           <filtering>true</filtering>
+      </resource>
+      <resource>
+        <directory>${project.basedir}</directory>
+        <includes>
+          <include>docker-compose.yml</include>
+        </includes>
+        <filtering>true</filtering>
       </resource>
     </resources>
     <testResources>
@@ -172,23 +217,31 @@
       </testResource>
     </testResources>
   </build>
-  
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-collections4</artifactId>
+      <version>${apache-commons-collections.version}</version>
+    </dependency>
+  </dependencies>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-collections4</artifactId>
-        <version>${apache-commons-collections.version}</version>
-      </dependency>
-      <dependency>
         <groupId>org.springdoc</groupId>
         <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-        <version>${springdoc.version}</version>
+        <version>${springdoc-openapi-starter-webmvc-ui.version}</version>
       </dependency>
       <dependency>
         <groupId>net.datafaker</groupId>
         <artifactId>datafaker</artifactId>
         <version>${datafaker.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.swagger.core.v3</groupId>
+        <artifactId>swagger-core-jakarta</artifactId>
+        <version>${swagger-core-jakarta.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

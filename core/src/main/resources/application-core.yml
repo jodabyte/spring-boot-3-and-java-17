@@ -1,13 +1,6 @@
 application:
   version: '@project.version@'
 
-mqtt:
-  host: homeassistant
-  port: 1883
-  clientId: ${spring.application.name}
-  username: @mqtt.username@
-  password: @mqtt.password@
-
 logging:
   pattern:
     level: '%5p [%X{traceId:-}:%X{spanId:-}]'
@@ -15,8 +8,6 @@ logging:
 spring:
   profiles:
     active: @spring.profiles.active@
-  application:
-    name: '@project.name@'
   output:
     ansi:
       enabled: always

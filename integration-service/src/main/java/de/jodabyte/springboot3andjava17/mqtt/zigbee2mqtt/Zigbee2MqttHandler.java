@@ -4,23 +4,20 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.jodabyte.springboot3andjava17.core.asset.Asset;
-import de.jodabyte.springboot3andjava17.core.asset.AssetServiceClient;
 import de.jodabyte.springboot3andjava17.core.asset.MqttNetworkConfiguration;
 import de.jodabyte.springboot3andjava17.core.asset.NetworkConfigurationType;
 import de.jodabyte.springboot3andjava17.mqtt.AbstractHandler;
 import de.jodabyte.springboot3andjava17.mqtt.zigbee2mqtt.model.BridgeDevice;
+import de.jodabyte.springboot3andjava17.openapi.asset.api.AssetsApi;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.ListUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
-import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 @Slf4j
-@Service
 @Validated
 public class Zigbee2MqttHandler extends AbstractHandler {
 
@@ -28,14 +25,15 @@ public class Zigbee2MqttHandler extends AbstractHandler {
   private static final String TOPIC_FORMAT = "zigbee2mqtt/%s";
 
   private final ObjectMapper objectMapper = new ObjectMapper();
+  private final AssetsApi assetServiceApi;
+  private final MqttPahoMessageDrivenChannelAdapter mqttInboundClient;
   private List<Asset> assetCache = new ArrayList<>();
 
-  @Autowired private AssetServiceClient assetServiceClient;
-
-  @Autowired private MqttPahoMessageDrivenChannelAdapter mqttInboundClient;
-
-  public Zigbee2MqttHandler() {
+  public Zigbee2MqttHandler(
+      AssetsApi assetServiceApi, MqttPahoMessageDrivenChannelAdapter mqttInboundClient) {
     super(Arrays.asList(TOPIC_DEVICE_UPDATE));
+    this.assetServiceApi = assetServiceApi;
+    this.mqttInboundClient = mqttInboundClient;
   }
 
   @Override
@@ -68,7 +66,8 @@ public class Zigbee2MqttHandler extends AbstractHandler {
   }
 
   private List<Asset> getAssets() {
-    List<Asset> assets = assetServiceClient.getAllAssets();
+
+    List<Asset> assets = assetServiceApi.all();
     return ListUtils.emptyIfNull(assets);
   }
 
@@ -87,7 +86,7 @@ public class Zigbee2MqttHandler extends AbstractHandler {
 
   private void disableAsset(Asset asset) {
     ((MqttNetworkConfiguration) asset.getNetworkConfiguration()).setEnabled(false);
-    Asset updatedAsset = assetServiceClient.updateAsset(asset);
+    Asset updatedAsset = assetServiceApi.update(asset);
     this.assetCache.set(this.assetCache.indexOf(asset), updatedAsset);
     log.info("Disable asset={}", updatedAsset.getName());
   }
@@ -107,7 +106,7 @@ public class Zigbee2MqttHandler extends AbstractHandler {
             device.getFriendlyName(),
             new MqttNetworkConfiguration(
                 String.format(TOPIC_FORMAT, device.getFriendlyName()), true));
-    Asset asset = assetServiceClient.createAsset(assetDto);
+    Asset asset = assetServiceApi.create(assetDto);
     this.assetCache.add(asset);
     log.info("Created asset from device={}", device.getFriendlyName());
   }

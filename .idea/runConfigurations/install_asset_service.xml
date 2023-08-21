@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="build-image asset-service" type="MavenRunConfiguration" factoryName="Maven">
+  <configuration default="false" name="install asset-service" type="MavenRunConfiguration" factoryName="Maven">
     <MavenSettings>
       <option name="myGeneralSettings" />
       <option name="myRunnerSettings">
@@ -26,12 +26,18 @@
           </option>
           <option name="goals">
             <list>
-              <option value="spring-boot:build-image" />
+              <option value="clean" />
+              <option value="install" />
+              <option value="-pl" />
+              <option value=":asset-service" />
+              <option value="-am" />
             </list>
           </option>
-          <option name="pomFileName" value=".\asset-service\pom.xml" />
+          <option name="pomFileName" />
           <option name="profilesMap">
-            <map />
+            <map>
+              <entry key="local" value="true" />
+            </map>
           </option>
           <option name="projectsCmdOptionValues">
             <list />
@@ -41,8 +47,6 @@
         </MavenRunnerParameters>
       </option>
     </MavenSettings>
-    <method v="2">
-      <option name="Maven.BeforeRunTask" enabled="true" file="$PROJECT_DIR$/pom.xml" goal="clean install -DskipTests -pl :asset-service -am" />
-    </method>
+    <method v="2" />
   </configuration>
 </component>

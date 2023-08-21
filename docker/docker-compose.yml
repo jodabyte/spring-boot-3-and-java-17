@@ -1,48 +1,49 @@
+version: "3.9"
+
 services:
-  asset-service:
-    image: asset-service:0.0.1-SNAPSHOT
-    container_name: asset-service
+  mongo:
+    image: mongodb/mongodb-community-server:6.0.8-ubi8
+    container_name: mongo
     ports:
-      - 8080:8080
-    depends_on:
-      - mongodb
-    environment:
-    - spring.profiles.active=docker
-    networks:
-      - app-tier
-  mongodb:
-    image: mongodb/mongodb-community-server:6.0-ubi8
-    container_name: mongodb
-    ports:
-      - 27017:27017
+      - "27017:27017"
     volumes:
       - mongodb_data:/data/db
     networks:
       - app-tier
-  kafka-ui:
-    image: provectuslabs/kafka-ui:v0.7.0
-    container_name: kafka-ui
+  asset-service:
+    image: asset-service:0.0.1-SNAPSHOT
+    container_name: asset-service
     ports:
-      - 8081:8080
+      - "8080:8080"
     depends_on:
-      - kafka
-    environment:
-      KAFKA_CLUSTERS_0_NAME: local
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
-      DYNAMIC_CONFIG_ENABLED: true
-    volumes:
-      - kafka_ui_conf:/config.yml
+      mongodb:
+        condition: service_started
     networks:
       - app-tier
+  kafka-ui:
+   image: provectuslabs/kafka-ui:v0.7.0
+   container_name: kafka-ui
+   ports:
+     - 8081:8080
+   depends_on:
+     - kafka
+   environment:
+     KAFKA_CLUSTERS_0_NAME: local
+     KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+     DYNAMIC_CONFIG_ENABLED: true
+   volumes:
+     - kafka_ui_conf:/config.yml
+   networks:
+     - app-tier
   kafka:
-    image: bitnami/kafka:3.4
-    container_name: kafka
-    ports:
-      - 9092:9092
-    environment:
-      - ALLOW_PLAINTEXT_LISTENER=yes
-    networks:
-      - app-tier
+   image: bitnami/kafka:3.4
+   container_name: kafka
+   ports:
+     - 9092:9092
+   environment:
+     - ALLOW_PLAINTEXT_LISTENER=yes
+   networks:
+     - app-tier
 
 volumes:
   mongodb_data:

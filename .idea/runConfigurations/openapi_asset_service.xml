@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="code checkstyle report" type="MavenRunConfiguration" factoryName="Maven">
+  <configuration default="false" name="openapi asset-service" type="MavenRunConfiguration" factoryName="Maven">
     <MavenSettings>
       <option name="myGeneralSettings" />
       <option name="myRunnerSettings" />
@@ -11,12 +11,18 @@
           </option>
           <option name="goals">
             <list>
-              <option value="checkstyle:checkstyle" />
+              <option value="clean" />
+              <option value="verify" />
+              <option value="-pl" />
+              <option value=":asset-service" />
+              <option value="-am" />
             </list>
           </option>
           <option name="pomFileName" />
           <option name="profilesMap">
-            <map />
+            <map>
+              <entry key="api-spec" value="true" />
+            </map>
           </option>
           <option name="projectsCmdOptionValues">
             <list />

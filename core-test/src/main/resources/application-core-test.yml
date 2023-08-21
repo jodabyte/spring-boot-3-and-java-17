@@ -1,14 +1,5 @@
 application:
   version: '@project.version@'
-  asset-service:
-    url: http://localhost:8080
-
-mqtt:
-  host: localhost
-  port: 1883
-  clientId: ${spring.application.name}
-  username:
-  password:
 
 logging:
   pattern:
@@ -17,8 +8,6 @@ logging:
 spring:
   profiles:
     active: @spring.profiles.active@
-  application:
-    name: '@project.name@'
   output:
     ansi:
       enabled: always

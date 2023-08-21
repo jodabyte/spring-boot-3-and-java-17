@@ -8,8 +8,6 @@
     <option name="MAIN_CLASS_NAME" value="de.jodabyte.springboot3andjava17.IntegrationServiceApplication" />
     <module name="integration-service" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/integration-service" />
-    <method v="2">
-      <option name="Make" enabled="true" />
-    </method>
+    <method v="2" />
   </configuration>
 </component>

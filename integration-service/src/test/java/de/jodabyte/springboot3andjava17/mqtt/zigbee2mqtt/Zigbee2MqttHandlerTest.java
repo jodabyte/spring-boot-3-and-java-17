@@ -1,18 +1,13 @@
 package de.jodabyte.springboot3andjava17.mqtt.zigbee2mqtt;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.hamcrest.CoreMatchers.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.testcontainers.shaded.org.awaitility.Awaitility.*;
 
 import de.jodabyte.springboot3andjava17.ContainerizedTest;
-import de.jodabyte.springboot3andjava17.core.asset.AssetServiceClient;
+import de.jodabyte.springboot3andjava17.openapi.asset.api.AssetsApi;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
@@ -20,10 +15,10 @@ import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannel
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 class Zigbee2MqttHandlerTest extends ContainerizedTest {
-
   @Autowired private MqttPahoMessageDrivenChannelAdapter mqttClient;
-  @Autowired private AssetServiceClient assetServiceClient;
   @Autowired private Zigbee2MqttHandler sut;
+
+  @Autowired private AssetsApi assetServiceApi;
 
   @Test
   void Handle_OnlyUnsupportedDevices_TopicListIsEmpty() throws IOException {
@@ -79,10 +74,9 @@ class Zigbee2MqttHandlerTest extends ContainerizedTest {
             .count());
   }
 
-  @BeforeEach
   @AfterEach
   void afterEach() {
-    assetServiceClient.getAllAssets().forEach(asset -> assetServiceClient.deleteAsset(asset));
+    assetServiceApi.all().forEach(asset -> assetServiceApi.delete(asset.getId()));
   }
 
   private String getFileContentAsString(String fileName) throws IOException {

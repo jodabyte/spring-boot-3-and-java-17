@@ -1,4 +1,4 @@
-package de.jodabyte.springboot3andjava17.common.validation;
+package de.jodabyte.springboot3andjava17.core.validation;
 
 import java.util.ArrayList;
 import java.util.List;

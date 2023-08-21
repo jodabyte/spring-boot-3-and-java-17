@@ -1,0 +1,6 @@
+springdoc:
+  show-actuator: 'false'
+
+management:
+  tracing:
+    enabled: false

@@ -4,10 +4,10 @@ import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import de.jodabyte.springboot3andjava17.ContainerizedTest;
-import de.jodabyte.springboot3andjava17.common.validation.ValidationErrorResponse;
-import de.jodabyte.springboot3andjava17.common.validation.Violation;
 import de.jodabyte.springboot3andjava17.core.asset.Asset;
 import de.jodabyte.springboot3andjava17.core.validation.ValidationConstants;
+import de.jodabyte.springboot3andjava17.core.validation.ValidationErrorResponse;
+import de.jodabyte.springboot3andjava17.core.validation.Violation;
 import de.jodabyte.springboot3andjava17.test.data.DataFactory;
 import java.util.Arrays;
 import java.util.List;

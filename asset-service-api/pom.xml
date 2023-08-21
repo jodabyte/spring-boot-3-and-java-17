@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>de.jodabyte.springboot3andjava17</groupId>
+    <artifactId>springboot3-and-java17</artifactId>
+    <version>${revision}</version>
+  </parent>
+  <artifactId>asset-service-api</artifactId>
+  <version>${revision}</version>
+  <name>asset-service-api</name>
+
+  <properties>
+    <openapi-base-package>${project.groupId}.openapi.asset</openapi-base-package>
+    <openapi-output-dir>${project.build.directory}/generated-sources/openapi</openapi-output-dir>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>flatten-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>${maven-resources-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>copy .openapi-generator-ignore</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${openapi-output-dir}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.basedir}</directory>
+                  <includes>
+                    <include>.openapi-generator-ignore</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.openapitools</groupId>
+        <artifactId>openapi-generator-maven-plugin</artifactId>
+        <version>${openapi-generator-maven-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>asset-service-api</id>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <inputSpecRootDirectory>${project.parent.basedir}\${openapi-spec-root-directory}</inputSpecRootDirectory>
+              <inputSpec>${openapi-spec-asset-service}</inputSpec>
+              <output>${openapi-output-dir}</output>
+              <generatorName>java</generatorName>
+              <library>webclient</library>
+              <ignoreFileOverride>${openapi-output-dir}\.openapi-generator-ignore</ignoreFileOverride>
+              <generateModels>false</generateModels>
+              <generateModelTests>false</generateModelTests>
+              <generateApiTests>false</generateApiTests>
+
+              <groupId>${project.groupId}</groupId>
+              <artifactId>${project.name}</artifactId>
+              <artifactVersion>${project.version}</artifactVersion>
+
+              <invokerPackage>${openapi-base-package}</invokerPackage>
+              <apiPackage>${openapi-base-package}.api</apiPackage>
+              <importMappings>
+                <importMapping>Ping=de.jodabyte.springboot3andjava17.core.asset.Ping</importMapping>
+                <importMapping>Asset=de.jodabyte.springboot3andjava17.core.asset.Asset</importMapping>
+                <importMapping>NetworkConfiguration=de.jodabyte.springboot3andjava17.core.asset.NetworkConfiguration</importMapping>
+                <importMapping>NetworkConfigurationType=de.jodabyte.springboot3andjava17.core.asset.NetworkConfigurationType</importMapping>
+                <importMapping>MqttNetworkConfiguration=de.jodabyte.springboot3andjava17.core.asset.MqttNetworkConfiguration</importMapping>
+                <importMapping>Violation=de.jodabyte.springboot3andjava17.core.validation.Violation</importMapping>
+                <importMapping>ValidationErrorResponse=de.jodabyte.springboot3andjava17.core.validation.ValidationErrorResponse</importMapping>
+              </importMappings>
+
+              <configOptions>
+                <parentGroupId>${project.parent.groupId}</parentGroupId>
+                <parentArtifactId>${project.parent.artifactId}</parentArtifactId>
+                <parentVersion>${project.parent.version}</parentVersion>
+
+                <useJakartaEe>true</useJakartaEe>
+                <webclientBlockingOperations>true</webclientBlockingOperations>
+              </configOptions>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <suppressionsLocation>${project.parent.basedir}${checkstyle-suppressions-path}</suppressionsLocation>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>de.jodabyte.springboot3andjava17</groupId>
+      <artifactId>core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.openapitools</groupId>
+      <artifactId>jackson-databind-nullable</artifactId>
+      <version>${openapi-jackson-databind-nullable.version}</version>
+    </dependency>
+  </dependencies>
+</project>

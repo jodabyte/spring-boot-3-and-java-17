@@ -28,6 +28,13 @@
         <spring.profiles.active>local</spring.profiles.active>
       </properties>
     </profile>
+    <profile>
+      <id>api-spec</id>
+      <properties>
+        <spring.profiles.active>api-spec,local</spring.profiles.active>
+        <maven.test.skip>true</maven.test.skip>
+      </properties>
+    </profile>
   </profiles>
 
   <build>
@@ -47,6 +54,9 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <suppressionsLocation>${project.parent.basedir}${checkstyle-suppressions-path}</suppressionsLocation>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.sonarsource.scanner.maven</groupId>
