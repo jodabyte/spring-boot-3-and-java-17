@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
+import org.springframework.integration.mqtt.support.MqttHeaders;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 
@@ -36,7 +37,7 @@ class MqttMessageHandlerTest extends ContainerizedTest {
     this.topic = this.dataFactory.createMqttTopic();
     this.message =
         MessageBuilder.withPayload(StringUtils.EMPTY)
-            .setHeader(MqttMessageHandler.HEADER_TOPIC, this.topic)
+            .setHeader(MqttHeaders.RECEIVED_TOPIC, this.topic)
             .build();
   }
 

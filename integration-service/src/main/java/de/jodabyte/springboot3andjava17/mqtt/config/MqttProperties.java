@@ -20,6 +20,6 @@ public class MqttProperties {
   }
 
   public String[] getAllInitialTopics() {
-    return new String[] {Zigbee2MqttHandler.TOPIC_DEVICE_UPDATE};
+    return new String[] {Zigbee2MqttHandler.TOPIC_BRIDGE_UPDATE};
   }
 }

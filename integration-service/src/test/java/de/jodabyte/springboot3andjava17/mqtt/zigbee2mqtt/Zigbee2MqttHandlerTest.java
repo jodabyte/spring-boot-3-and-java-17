@@ -24,11 +24,11 @@ class Zigbee2MqttHandlerTest extends ContainerizedTest {
   void Handle_OnlyUnsupportedDevices_TopicListIsEmpty() throws IOException {
     String payload = getFileContentAsString("unsupported_devices.json");
 
-    this.sut.handle(Zigbee2MqttHandler.TOPIC_DEVICE_UPDATE, payload);
+    this.sut.handle(Zigbee2MqttHandler.TOPIC_BRIDGE_UPDATE, payload);
 
     assertTrue(
         Arrays.stream(mqttClient.getTopic())
-            .filter(topic -> !sut.getTopics().contains(Zigbee2MqttHandler.TOPIC_DEVICE_UPDATE))
+            .filter(topic -> !sut.getTopics().contains(Zigbee2MqttHandler.TOPIC_BRIDGE_UPDATE))
             .toList()
             .isEmpty());
   }
@@ -38,7 +38,7 @@ class Zigbee2MqttHandlerTest extends ContainerizedTest {
     int expectedTopicSize = 2;
     String payload = getFileContentAsString("unknown_devices.json");
 
-    this.sut.handle(Zigbee2MqttHandler.TOPIC_DEVICE_UPDATE, payload);
+    this.sut.handle(Zigbee2MqttHandler.TOPIC_BRIDGE_UPDATE, payload);
 
     assertEquals(
         expectedTopicSize,
@@ -55,7 +55,7 @@ class Zigbee2MqttHandlerTest extends ContainerizedTest {
     int expectedTopicSizeAfterUnsubscribeFromRemovedDevices = 1;
 
     String payload = getFileContentAsString("unknown_devices.json");
-    this.sut.handle(Zigbee2MqttHandler.TOPIC_DEVICE_UPDATE, payload);
+    this.sut.handle(Zigbee2MqttHandler.TOPIC_BRIDGE_UPDATE, payload);
 
     assertEquals(
         expectedTopicSizeAfterSubscribeToUnknownDevices,
@@ -65,7 +65,7 @@ class Zigbee2MqttHandlerTest extends ContainerizedTest {
             .size());
 
     payload = getFileContentAsString("one_removed_device.json");
-    this.sut.handle(Zigbee2MqttHandler.TOPIC_DEVICE_UPDATE, payload);
+    this.sut.handle(Zigbee2MqttHandler.TOPIC_BRIDGE_UPDATE, payload);
 
     assertEquals(
         expectedTopicSizeAfterUnsubscribeFromRemovedDevices,

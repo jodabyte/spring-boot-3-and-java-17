@@ -5,15 +5,13 @@ import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.integration.mqtt.support.MqttHeaderAccessor;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHandler;
-import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.MessagingException;
 
 @Slf4j
 public class MqttMessageHandler implements MessageHandler {
-
-  public static final String HEADER_TOPIC = "mqtt_receivedTopic";
 
   private final List<AbstractHandler> handlers;
 
@@ -23,21 +21,15 @@ public class MqttMessageHandler implements MessageHandler {
 
   @Override
   public void handleMessage(Message<?> message) throws MessagingException {
-    MessageHeaders headers = message.getHeaders();
-
-    String topic = getTopic(headers);
-    log.debug("received msg in topic={}", topic);
+    String topic = getTopic(message);
     Optional<AbstractHandler> handler = getHandler(topic);
     handler.ifPresentOrElse(
         h -> h.handle(topic, message.getPayload()),
-        () -> log.info("No Handler exists for header={}", headers));
+        () -> log.info("No Handler exists for header={}", message.getHeaders()));
   }
 
-  private String getTopic(MessageHeaders headers) {
-    String topic =
-        headers != null && headers.containsKey(HEADER_TOPIC)
-            ? headers.get(HEADER_TOPIC, String.class)
-            : StringUtils.EMPTY;
+  private String getTopic(Message<?> message) {
+    String topic = MqttHeaderAccessor.receivedTopic(message);
     return StringUtils.isNotBlank(topic) ? topic : StringUtils.EMPTY;
   }
 

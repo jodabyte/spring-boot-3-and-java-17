@@ -7,11 +7,13 @@ import de.jodabyte.springboot3andjava17.core.asset.Asset;
 import de.jodabyte.springboot3andjava17.core.asset.MqttNetworkConfiguration;
 import de.jodabyte.springboot3andjava17.core.asset.NetworkConfigurationType;
 import de.jodabyte.springboot3andjava17.mqtt.AbstractHandler;
+import de.jodabyte.springboot3andjava17.mqtt.zigbee2mqtt.mapper.Devices;
 import de.jodabyte.springboot3andjava17.mqtt.zigbee2mqtt.model.BridgeDevice;
 import de.jodabyte.springboot3andjava17.openapi.asset.api.AssetsApi;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.ListUtils;
 import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
@@ -21,8 +23,8 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class Zigbee2MqttHandler extends AbstractHandler {
 
-  public static final String TOPIC_DEVICE_UPDATE = "zigbee2mqtt/bridge/devices";
-  private static final String TOPIC_FORMAT = "zigbee2mqtt/%s";
+  public static final String TOPIC_BRIDGE_UPDATE = "zigbee2mqtt/bridge/devices";
+  public static final String DEVICE_UPDATE_TOPIC_FORMAT = "zigbee2mqtt/%s";
 
   private final ObjectMapper objectMapper = new ObjectMapper();
   private final AssetsApi assetServiceApi;
@@ -31,18 +33,34 @@ public class Zigbee2MqttHandler extends AbstractHandler {
 
   public Zigbee2MqttHandler(
       AssetsApi assetServiceApi, MqttPahoMessageDrivenChannelAdapter mqttInboundClient) {
-    super(Arrays.asList(TOPIC_DEVICE_UPDATE));
+    super(new ArrayList<>(Arrays.asList(TOPIC_BRIDGE_UPDATE)));
     this.assetServiceApi = assetServiceApi;
     this.mqttInboundClient = mqttInboundClient;
   }
 
   @Override
   public void handle(String topic, Object payload) {
-    if (topic.equals(TOPIC_DEVICE_UPDATE)) {
+    if (topic.equals(TOPIC_BRIDGE_UPDATE)) {
       try {
         List<BridgeDevice> devices =
             objectMapper.readValue((String) payload, new TypeReference<>() {});
         handleDeviceUpdate(devices);
+      } catch (JsonProcessingException e) {
+        log.error("Failed to parse payload for topic={}.", topic, e);
+      }
+    } else if (this.assetCache.stream()
+        .anyMatch(
+            asset ->
+                ((MqttNetworkConfiguration) asset.getNetworkConfiguration())
+                    .getTopic()
+                    .equals(topic))) {
+      Optional<Devices> optionalDevice = Devices.findDevice(topic);
+      if (optionalDevice.isEmpty()) {
+        log.error("No mapper found for topic={}.", topic);
+      }
+
+      try {
+        Object data = objectMapper.readValue((String) payload, optionalDevice.get().getType());
       } catch (JsonProcessingException e) {
         log.error("Failed to parse payload for topic={}.", topic, e);
       }
@@ -72,7 +90,14 @@ public class Zigbee2MqttHandler extends AbstractHandler {
   }
 
   private List<BridgeDevice> getSupportedDevices(List<BridgeDevice> devices) {
-    return ListUtils.emptyIfNull(devices).stream().filter(BridgeDevice::isSupported).toList();
+    return ListUtils.emptyIfNull(devices).stream()
+        .filter(BridgeDevice::isSupported)
+        .filter(
+            device ->
+                Devices.findDevice(
+                        String.format(DEVICE_UPDATE_TOPIC_FORMAT, device.getFriendlyName()))
+                    .isPresent())
+        .toList();
   }
 
   private void disableRemovedDevices(List<BridgeDevice> devices) {
@@ -105,7 +130,7 @@ public class Zigbee2MqttHandler extends AbstractHandler {
         Asset.of(
             device.getFriendlyName(),
             new MqttNetworkConfiguration(
-                String.format(TOPIC_FORMAT, device.getFriendlyName()), true));
+                String.format(DEVICE_UPDATE_TOPIC_FORMAT, device.getFriendlyName()), true));
     Asset asset = assetServiceApi.create(assetDto);
     this.assetCache.add(asset);
     log.info("Created asset from device={}", device.getFriendlyName());
@@ -121,6 +146,7 @@ public class Zigbee2MqttHandler extends AbstractHandler {
             topic -> {
               if (Arrays.asList(this.mqttInboundClient.getTopic()).contains(topic)) {
                 log.info("removeTopic={}", topic);
+                removeTopic(topic);
                 this.mqttInboundClient.removeTopic(topic);
               }
             });
@@ -136,6 +162,7 @@ public class Zigbee2MqttHandler extends AbstractHandler {
         .forEach(
             topic -> {
               log.info("addTopic={}", topic);
+              addTopic(topic);
               this.mqttInboundClient.addTopic(topic);
             });
   }
