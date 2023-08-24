@@ -1,0 +1,64 @@
+[
+    {
+        "definition": null,
+        "disabled": false,
+        "endpoints": {
+            "1": {
+                "bindings": [],
+                "clusters": {
+                    "input": [
+                        "genBasic",
+                        "genIdentify",
+                        "genOnOff",
+                        "genTime",
+                        "genOta",
+                        "26",
+                        "lightingColorCtrl"
+                    ],
+                    "output": [
+                        "genBasic",
+                        "genIdentify",
+                        "genGroups",
+                        "genScenes",
+                        "genOnOff",
+                        "genLevelCtrl",
+                        "genPollCtrl",
+                        "lightingColorCtrl",
+                        "msIlluminanceMeasurement",
+                        "msTemperatureMeasurement",
+                        "msRelativeHumidity",
+                        "msOccupancySensing",
+                        "ssIasZone",
+                        "haMeterIdentification",
+                        "haApplianceStatistics",
+                        "haElectricalMeasurement",
+                        "seMetering",
+                        "touchlink",
+                        "manuSpecificUbisysDimmerSetup",
+                        "manuSpecificSamsungAccelerometer"
+                    ]
+                },
+                "configured_reportings": [],
+                "scenes": []
+            },
+            "242": {
+                "bindings": [],
+                "clusters": {
+                    "input": [],
+                    "output": [
+                        "greenPower"
+                    ]
+                },
+                "configured_reportings": [],
+                "scenes": []
+            }
+        },
+        "friendly_name": "Coordinator",
+        "ieee_address": "0xe0798dfffefee6eb",
+        "interview_completed": true,
+        "interviewing": false,
+        "network_address": 0,
+        "supported": false,
+        "type": "Coordinator"
+    }
+]
