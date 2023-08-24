@@ -6,4 +6,10 @@ spring:
   docker:
     compose:
       file: @docker-compose-path@
+  kafka:
+    client-id: '@project.name@'
+    listener:
+      log-container-config: true
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 

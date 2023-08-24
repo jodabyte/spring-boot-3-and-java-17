@@ -19,6 +19,7 @@ import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.ListUtils;
 import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.validation.annotation.Validated;
 
 @Slf4j
@@ -31,13 +32,17 @@ public class Zigbee2MqttHandler extends AbstractHandler {
   private final ObjectMapper objectMapper = new ObjectMapper();
   private final AssetsApi assetServiceApi;
   private final MqttPahoMessageDrivenChannelAdapter mqttInboundClient;
+  private final KafkaTemplate<String, String> kafkaClient;
   private List<Asset> assetCache = new ArrayList<>();
 
   public Zigbee2MqttHandler(
-      AssetsApi assetServiceApi, MqttPahoMessageDrivenChannelAdapter mqttInboundClient) {
+      AssetsApi assetServiceApi,
+      MqttPahoMessageDrivenChannelAdapter mqttInboundClient,
+      KafkaTemplate<String, String> kafkaClient) {
     super(Arrays.asList(TOPIC_BRIDGE_UPDATE));
     this.assetServiceApi = assetServiceApi;
     this.mqttInboundClient = mqttInboundClient;
+    this.kafkaClient = kafkaClient;
   }
 
   @Override
@@ -58,6 +63,7 @@ public class Zigbee2MqttHandler extends AbstractHandler {
 
       try {
         Object data = objectMapper.readValue((String) payload, optionalDevice.get().getType());
+        kafkaClient.send("mqtt", objectMapper.writeValueAsString(data));
       } catch (JsonProcessingException e) {
         log.error("Failed to parse payload for topic={}.", topic, e);
       }
@@ -119,7 +125,7 @@ public class Zigbee2MqttHandler extends AbstractHandler {
     ((MqttNetworkConfiguration) asset.getNetworkConfiguration()).setEnabled(false);
     Asset updatedAsset = assetServiceApi.update(asset);
     this.assetCache.set(this.assetCache.indexOf(asset), updatedAsset);
-    log.info("Disable asset={}", updatedAsset.getName());
+    log.info("disable asset={}", updatedAsset.getName());
   }
 
   private void createOrEnableAssets(List<BridgeDevice> devices) {
@@ -150,14 +156,14 @@ public class Zigbee2MqttHandler extends AbstractHandler {
                 String.format(DEVICE_UPDATE_TOPIC_FORMAT, device.getFriendlyName()), true));
     Asset asset = assetServiceApi.create(assetDto);
     this.assetCache.add(asset);
-    log.info("Created asset from device={}", device.getFriendlyName());
+    log.info("created asset from device={}", device.getFriendlyName());
   }
 
   private void enableAsset(Asset asset) {
     ((MqttNetworkConfiguration) asset.getNetworkConfiguration()).setEnabled(true);
     Asset updatedAsset = assetServiceApi.update(asset);
     this.assetCache.set(this.assetCache.indexOf(asset), updatedAsset);
-    log.info("Enabled asset={}", updatedAsset.getName());
+    log.info("enabled asset={}", updatedAsset.getName());
   }
 
   private void updateMqttSubscription() {
@@ -168,7 +174,7 @@ public class Zigbee2MqttHandler extends AbstractHandler {
             topic -> {
               if (Arrays.asList(this.mqttInboundClient.getTopic()).contains(topic)) {
                 this.mqttInboundClient.removeTopic(topic);
-                log.info("removeTopic={}", topic);
+                log.info("remove topic={}", topic);
               }
             });
     getOnlyEnabledAssets()
@@ -180,7 +186,7 @@ public class Zigbee2MqttHandler extends AbstractHandler {
         .forEach(
             topic -> {
               this.mqttInboundClient.addTopic(topic);
-              log.info("addTopic={}", topic);
+              log.info("add topic={}", topic);
             });
   }
 

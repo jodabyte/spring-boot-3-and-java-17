@@ -22,6 +22,7 @@ public class MqttMessageHandler implements MessageHandler {
   @Override
   public void handleMessage(Message<?> message) throws MessagingException {
     String topic = getTopic(message);
+    log.info("handle topic={}", topic);
     Optional<AbstractHandler> handler = getHandler(topic);
     handler.ifPresentOrElse(
         h -> h.handle(topic, message.getPayload()),

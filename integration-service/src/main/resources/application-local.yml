@@ -8,3 +8,7 @@ mqtt:
   clientId: ${spring.application.name}
   username: @mqtt.username@
   password: @mqtt.password@
+
+spring:
+  kafka:
+    bootstrap-servers: localhost:9094
