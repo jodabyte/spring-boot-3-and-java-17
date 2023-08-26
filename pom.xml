@@ -149,6 +149,10 @@
         <plugin> <!-- spring boot -->
           <groupId>org.springframework.boot</groupId>
           <artifactId>spring-boot-maven-plugin</artifactId>
+          <configuration>
+            <!-- build-image createdDate -->
+            <createdDate>now</createdDate>
+          </configuration>
         </plugin>
         <plugin> <!-- openapi spec generator -->
           <groupId>org.springdoc</groupId>
