@@ -1,4 +1,4 @@
-package de.jodabyte.springboot3andjava17.mqtt.zigbee2mqtt.mapper;
+package de.jodabyte.springboot3andjava17.core.mqtt;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

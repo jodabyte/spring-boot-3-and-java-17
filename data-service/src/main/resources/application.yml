@@ -1,0 +1,18 @@
+spring:
+  config:
+    import: application-core.yml
+  application:
+    name: '@project.name@'
+  kafka:
+    client-id: '@project.name@'
+    streams:
+      application-id: '@project.name@'
+      properties:
+        default:
+          key:
+            serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+          value:
+            serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+
+
+

@@ -6,8 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.jodabyte.springboot3andjava17.core.asset.Asset;
 import de.jodabyte.springboot3andjava17.core.asset.MqttNetworkConfiguration;
 import de.jodabyte.springboot3andjava17.core.asset.NetworkConfigurationType;
+import de.jodabyte.springboot3andjava17.core.mqtt.Zigbee2MqttDevices;
+import de.jodabyte.springboot3andjava17.kafka.KafkaConfig;
 import de.jodabyte.springboot3andjava17.mqtt.AbstractHandler;
-import de.jodabyte.springboot3andjava17.mqtt.zigbee2mqtt.mapper.Devices;
 import de.jodabyte.springboot3andjava17.mqtt.zigbee2mqtt.model.BridgeDevice;
 import de.jodabyte.springboot3andjava17.openapi.asset.api.AssetsApi;
 import java.util.ArrayList;
@@ -19,7 +20,10 @@ import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.ListUtils;
 import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
+import org.springframework.integration.support.MessageBuilder;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.validation.annotation.Validated;
 
 @Slf4j
@@ -30,16 +34,19 @@ public class Zigbee2MqttHandler extends AbstractHandler {
   public static final String DEVICE_UPDATE_TOPIC_FORMAT = "zigbee2mqtt/%s";
 
   private final ObjectMapper objectMapper = new ObjectMapper();
+  private final RetryTemplate retryTemplate;
   private final AssetsApi assetServiceApi;
   private final MqttPahoMessageDrivenChannelAdapter mqttInboundClient;
-  private final KafkaTemplate<String, String> kafkaClient;
+  private final KafkaTemplate<String, Object> kafkaClient;
   private List<Asset> assetCache = new ArrayList<>();
 
   public Zigbee2MqttHandler(
+      RetryTemplate retryTemplate,
       AssetsApi assetServiceApi,
       MqttPahoMessageDrivenChannelAdapter mqttInboundClient,
-      KafkaTemplate<String, String> kafkaClient) {
+      KafkaTemplate<String, Object> kafkaClient) {
     super(Arrays.asList(TOPIC_BRIDGE_UPDATE));
+    this.retryTemplate = retryTemplate;
     this.assetServiceApi = assetServiceApi;
     this.mqttInboundClient = mqttInboundClient;
     this.kafkaClient = kafkaClient;
@@ -56,14 +63,26 @@ public class Zigbee2MqttHandler extends AbstractHandler {
         log.error("Failed to parse payload for topic={}.", topic, e);
       }
     } else if (hasAssetWithTopic(topic)) {
-      Optional<Devices> optionalDevice = Devices.findDevice(topic);
-      if (optionalDevice.isEmpty()) {
+      Optional<Zigbee2MqttDevices> deviceContainer = Zigbee2MqttDevices.findDeviceByTopic(topic);
+      if (deviceContainer.isEmpty()) {
         log.error("No mapper found for topic={}.", topic);
+        return;
       }
 
+      Optional<Asset> assetContainer = getAssetByTopic(topic);
+      if (assetContainer.isEmpty()) {
+        log.error("Could not find asset for topic={}.", topic);
+        return;
+      }
+
+      Asset asset = assetContainer.get();
       try {
-        Object data = objectMapper.readValue((String) payload, optionalDevice.get().getType());
-        kafkaClient.send("mqtt", objectMapper.writeValueAsString(data));
+        Object data = objectMapper.readValue((String) payload, deviceContainer.get().getType());
+        kafkaClient.send(
+            MessageBuilder.withPayload(data)
+                .setHeader(KafkaHeaders.KEY, asset.getName())
+                .setHeader(KafkaHeaders.TOPIC, KafkaConfig.TOPIC_MQTT)
+                .build());
       } catch (JsonProcessingException e) {
         log.error("Failed to parse payload for topic={}.", topic, e);
       }
@@ -93,7 +112,7 @@ public class Zigbee2MqttHandler extends AbstractHandler {
   }
 
   private List<Asset> getAssets() {
-    List<Asset> all = assetServiceApi.all();
+    List<Asset> all = this.retryTemplate.execute(retryContext -> assetServiceApi.all());
     return ListUtils.defaultIfNull(assetServiceApi.all(), new ArrayList<>()).stream()
         .filter(
             asset ->
@@ -106,7 +125,7 @@ public class Zigbee2MqttHandler extends AbstractHandler {
         .filter(BridgeDevice::isSupported)
         .filter(
             device ->
-                Devices.findDevice(
+                Zigbee2MqttDevices.findDeviceByTopic(
                         String.format(DEVICE_UPDATE_TOPIC_FORMAT, device.getFriendlyName()))
                     .isPresent())
         .toList();
@@ -209,5 +228,15 @@ public class Zigbee2MqttHandler extends AbstractHandler {
     return this.assetCache.stream()
         .filter(
             config -> !((MqttNetworkConfiguration) config.getNetworkConfiguration()).isEnabled());
+  }
+
+  private Optional<Asset> getAssetByTopic(String topic) {
+    return getOnlyEnabledAssets()
+        .filter(
+            asset ->
+                ((MqttNetworkConfiguration) asset.getNetworkConfiguration())
+                    .getTopic()
+                    .equals(topic))
+        .findFirst();
   }
 }

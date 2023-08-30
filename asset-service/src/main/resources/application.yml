@@ -2,14 +2,15 @@ spring:
   config:
     import: application-core.yml
   application:
-    name: '@project.name@'
+    name: @project.name@
   data:
     mongodb:
       database: app-data
 
 springdoc:
   default-produces-media-type: application/json
-  show-actuator: 'true'
+  show-actuator: true
+  writer-with-default-pretty-printer: true
 
 management:
   tracing:
@@ -24,7 +25,7 @@ management:
     enabled-by-default: true
     web:
       exposure:
-        include: '*'
+        include: *
   endpoint:
     configprops:
       show-values: always
@@ -35,6 +36,6 @@ management:
       show-components: always    
   info:
     os:
-      enabled: 'true'
+      enabled: true
     java:
-      enabled: 'true'
+      enabled: true

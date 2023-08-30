@@ -16,6 +16,7 @@ import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannel
 import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.retry.support.RetryTemplate;
 
 @Slf4j
 @Configuration
@@ -27,10 +28,11 @@ public class MqttConfiguration {
 
   @Bean
   public Zigbee2MqttHandler getZigbee2MqttHandler(
+      RetryTemplate retryTemplate,
       AssetsApi assetServiceApi,
       MqttPahoMessageDrivenChannelAdapter mqttInboundClient,
-      KafkaTemplate<String, String> kafkaTemplate) {
-    return new Zigbee2MqttHandler(assetServiceApi, mqttInboundClient, kafkaTemplate);
+      KafkaTemplate<String, Object> kafkaTemplate) {
+    return new Zigbee2MqttHandler(retryTemplate, assetServiceApi, mqttInboundClient, kafkaTemplate);
   }
 
   @Bean

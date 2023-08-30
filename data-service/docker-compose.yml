@@ -18,13 +18,15 @@ services:
     depends_on:
       mongo:
         condition: service_started
+
   kafka-ui:
     image: @docker-image-kafka-ui@
     container_name: kafka-ui
     ports:
-      - "8081:8080"
+      - "8082:8080"
     depends_on:
-      - kafka
+      kafka:
+        condition: service_started
     environment:
       KAFKA_CLUSTERS_0_NAME: local
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
@@ -49,6 +51,14 @@ services:
       - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
     networks:
       - app-tier
+  integration-service:
+    image: integration-service:@project.version@
+    container_name: integration-service
+    networks:
+      - app-tier
+    depends_on:
+      - asset-service
+      - kafka
 
 volumes:
   kafka_ui_conf:
