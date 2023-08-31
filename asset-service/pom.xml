@@ -69,6 +69,7 @@
             <artifactId>springdoc-openapi-maven-plugin</artifactId>
             <configuration>
               <outputDir>${project.parent.basedir}\${openapi-spec-root-directory}</outputDir>
+              <apiDocsUrl>http://localhost:8081/v3/api-docs</apiDocsUrl>
             </configuration>
           </plugin>
         </plugins>
