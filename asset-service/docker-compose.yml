@@ -6,3 +6,9 @@ services:
     container_name: mongo
     ports:
       - "27017:27017"
+    networks:
+      - app-tier
+
+networks:
+  app-tier:
+    driver: bridge

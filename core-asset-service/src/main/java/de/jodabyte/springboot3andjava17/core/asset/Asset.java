@@ -1,28 +1,24 @@
 package de.jodabyte.springboot3andjava17.core.asset;
 
+import jakarta.annotation.Nullable;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import org.springframework.data.annotation.Id;
 
 @Data
+@AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
-@AllArgsConstructor
-public final class Asset {
+public class Asset {
 
-  @Id private String id;
+  @Nullable private String id;
 
   @NotBlank(message = "{validation.asset.name}")
   private String name;
 
   @NotNull(message = "{validation.asset.networkConfiguration}")
+  @Valid
   private NetworkConfiguration networkConfiguration;
-
-  public static Asset of(
-      final @NonNull String name, final @NonNull NetworkConfiguration networkConfiguration) {
-    return new Asset(null, name, networkConfiguration);
-  }
 }

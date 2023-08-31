@@ -1,7 +1,7 @@
 package de.jodabyte.springboot3andjava17.asset;
 
-import de.jodabyte.springboot3andjava17.core.asset.Asset;
-import de.jodabyte.springboot3andjava17.core.validation.ValidationConstants;
+import de.jodabyte.springboot3andjava17.asset.model.Asset;
+import de.jodabyte.springboot3andjava17.core.asset.validation.ValidationConstants;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import java.util.List;

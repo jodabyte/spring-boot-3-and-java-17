@@ -35,7 +35,7 @@ public class DataFactory {
   }
 
   public Asset createAsset() {
-    return Asset.of(createAssetName(), createMqttNetworkConfiguration());
+    return Asset.of(null, createAssetName(), createMqttNetworkConfiguration());
   }
 
   public String createAssetName() {
@@ -43,7 +43,7 @@ public class DataFactory {
   }
 
   public MqttNetworkConfiguration createMqttNetworkConfiguration() {
-    return new MqttNetworkConfiguration(createMqttTopic(), this.boolProvider.bool());
+    return MqttNetworkConfiguration.of(createMqttTopic(), this.boolProvider.bool());
   }
 
   public String createMqttTopic() {

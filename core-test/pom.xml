@@ -11,32 +11,6 @@
   <version>${revision}</version>
   <name>core-test</name>
 
-  <profiles>
-    <profile>
-      <id>docker</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <properties>
-        <spring.profiles.active>docker</spring.profiles.active>
-        <maven.test.skip>true</maven.test.skip>
-      </properties>
-    </profile>
-    <profile>
-      <id>local</id>
-      <properties>
-        <spring.profiles.active>local</spring.profiles.active>
-      </properties>
-    </profile>
-    <profile>
-      <id>api-spec</id>
-      <properties>
-        <spring.profiles.active>api-spec,local</spring.profiles.active>
-        <maven.test.skip>true</maven.test.skip>
-      </properties>
-    </profile>
-  </profiles>
-
   <build>
     <plugins>
       <plugin>
@@ -52,7 +26,7 @@
   <dependencies>
     <dependency>
       <groupId>de.jodabyte.springboot3andjava17</groupId>
-      <artifactId>core</artifactId>
+      <artifactId>core-asset-service</artifactId>
       <version>${project.version}</version>
     </dependency>
 

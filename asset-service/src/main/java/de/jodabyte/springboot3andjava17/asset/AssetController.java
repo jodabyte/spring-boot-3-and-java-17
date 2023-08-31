@@ -23,18 +23,19 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Assets", description = "Asset Management")
 public class AssetController {
 
+  @Autowired private AssetMapper assetMapper;
   @Autowired private AssetService assetService;
 
   @GetMapping("/assets")
   @Operation(
-      summary = "get all",
+      summary = "get all assets",
       responses =
           @ApiResponse(
               responseCode = "200",
               content =
                   @Content(array = @ArraySchema(schema = @Schema(implementation = Asset.class)))))
   public List<Asset> all() {
-    return assetService.getAllAssets();
+    return assetMapper.entityToDto(assetService.getAllAssets());
   }
 
   @PostMapping("/assets")
@@ -49,12 +50,12 @@ public class AssetController {
               responseCode = "201",
               content = @Content(schema = @Schema(implementation = Asset.class))))
   public Asset create(@RequestBody Asset asset) {
-    return assetService.createAsset(asset);
+    return assetMapper.entityToDto(assetService.createAsset(assetMapper.dtoToEntity(asset)));
   }
 
   @GetMapping("/assets/{id}")
   @Operation(
-      summary = "find by id",
+      summary = "find asset by id",
       responses = {
         @ApiResponse(
             responseCode = "200",
@@ -62,12 +63,12 @@ public class AssetController {
         @ApiResponse(responseCode = "404", content = @Content),
       })
   public Asset findById(@PathVariable String id) {
-    return assetService.getAssetById(id);
+    return assetMapper.entityToDto(assetService.getAssetById(id));
   }
 
   @PutMapping("/assets")
   @Operation(
-      summary = "update by id",
+      summary = "update asset by id",
       requestBody =
           @io.swagger.v3.oas.annotations.parameters.RequestBody(
               content = @Content(schema = @Schema(implementation = Asset.class))),
@@ -78,13 +79,13 @@ public class AssetController {
         @ApiResponse(responseCode = "404", content = @Content)
       })
   public Asset update(@RequestBody Asset asset) {
-    return assetService.updateAsset(asset);
+    return assetMapper.entityToDto(assetService.updateAsset(assetMapper.dtoToEntity(asset)));
   }
 
   @DeleteMapping("/assets/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   @Operation(
-      summary = "delete by id",
+      summary = "delete asset by id",
       responses = {
         @ApiResponse(responseCode = "204", content = @Content),
         @ApiResponse(responseCode = "404", content = @Content)

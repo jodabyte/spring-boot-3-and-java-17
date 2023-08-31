@@ -1,5 +1,5 @@
 application:
-  version: '@project.version@'
+  version: @project.version@
 
 logging:
   pattern:

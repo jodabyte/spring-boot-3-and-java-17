@@ -1,6 +1,6 @@
 package de.jodabyte.springboot3andjava17.ping;
 
-import de.jodabyte.springboot3andjava17.core.asset.Ping;
+import de.jodabyte.springboot3andjava17.core.ping.Ping;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

@@ -3,7 +3,7 @@ package de.jodabyte.springboot3andjava17.ping;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import de.jodabyte.springboot3andjava17.ContainerizedTest;
-import de.jodabyte.springboot3andjava17.core.asset.Ping;
+import de.jodabyte.springboot3andjava17.core.ping.Ping;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

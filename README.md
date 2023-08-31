@@ -7,8 +7,10 @@ Spring Boot 3 and Java 17 powered things.
     - Dockerimage generation with spring-boot-maven-plugin
     - Docker compose for dependency management
     - spring-boot-starter-validation for input validation
+    - Json polymorphic types
     - Code generation
         - projectlombok
+        - mapstruct
     - Maven
       - [Maven CI Friendly Versions](https://maven.apache.org/maven-ci-friendly.html)
       - Profiles to manage build
@@ -39,36 +41,40 @@ Spring Boot 3 and Java 17 powered things.
 # Getting Startet
 ## Set credentials
 Create the file credentials.properties in project directory with the following properties:
+- mqtt.host
 - mqtt.username
 - mqtt.password
-## Run OpenAPI Generator
-- Run configuration: openapi asset-service
-## Build Docker Image
-`spring-boot:build-image`
+## Build Docker Images
+`mvn spring-boot:build-image`
+- asset service
+- integration service
+- data service
 ## Deploy locally
 ### Docker Compose
-Create and start services: `docker compose -f .\docker\docker-compose.yaml up`  
-Stop services and remove containers, networks: `docker compose -f .\docker\docker-compose.yaml down`
+Create and start services: `docker-compose -f .\docker\docker-compose.yaml up -d`  
+Stop services and remove containers, networks: `docker-compose -f .\docker\docker-compose.yaml down`
 ### Portainer
 Use the docker compose file to create a stack in portainer.
-## Tests
-### Unit Tests
+# Run OpenAPI Generator
+- Run configuration: openapi asset-service
+# Tests
+## Unit Tests
 `mvn test`
-### Integration tests
+## Integration tests
 `mvn verify`
-### Static code analysis / coding standard
+## Static code analysis / coding standard
 `mvn spotless:apply spotless:check` to format code  
 `mvn checkstyle:check` to run checkstyle analysis  
 `mvn clean verify sonar:sonar` to run sonarqube analysis  
-## Maven
-### Checking for new property-linked updates 
+# Maven
+## Checking for new property-linked updates 
 `mvn versions:display-property-updates`
-### Checking for new dependency updates
+## Checking for new dependency updates
 `mvn versions:display-dependency-updates`
  
 # [API Endpoints](https://learn.microsoft.com/en-us/azure/architecture/best-practices/api-design)
-- OpenAPI [json](http://localhost:8080/v3/api-docs) [yaml](http://localhost:8080/v3/api-docs.yaml)
-- [Swagger UI](http://localhost:8080/swagger-ui.html)
-- [Spring Actuator](http://localhost:8080/actuator)
+- asset service 
+  - OpenAPI: [Swagger UI](http://localhost:8081/swagger-ui.html), [json](http://localhost:8081/v3/api-docs), [yaml](http://localhost:8081/v3/api-docs.yaml)
+  - Monitoring: [Spring Actuator](http://localhost:8081/actuator)
 - [Portainer](https://localhost:9443)
 - [SonarQube](http://localhost:9000)

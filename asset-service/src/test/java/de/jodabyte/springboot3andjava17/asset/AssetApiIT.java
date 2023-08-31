@@ -5,9 +5,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import de.jodabyte.springboot3andjava17.ContainerizedTest;
 import de.jodabyte.springboot3andjava17.core.asset.Asset;
-import de.jodabyte.springboot3andjava17.core.validation.ValidationConstants;
-import de.jodabyte.springboot3andjava17.core.validation.ValidationErrorResponse;
-import de.jodabyte.springboot3andjava17.core.validation.Violation;
+import de.jodabyte.springboot3andjava17.core.asset.MqttNetworkConfiguration;
+import de.jodabyte.springboot3andjava17.core.asset.validation.ValidationConstants;
+import de.jodabyte.springboot3andjava17.core.asset.validation.ValidationErrorResponse;
+import de.jodabyte.springboot3andjava17.core.asset.validation.Violation;
 import de.jodabyte.springboot3andjava17.test.data.DataFactory;
 import java.util.Arrays;
 import java.util.List;
@@ -27,16 +28,16 @@ import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec;
 class AssetApiIT extends ContainerizedTest {
 
   @Autowired private WebTestClient webClient;
-
   @Autowired private MessageSource messageSource;
-
   @Autowired private AssetRepository assetRepository;
-
+  @Autowired private AssetMapper assetMapper;
   @Autowired private DataFactory dataFactory;
 
   @Test
   void All_GetAllAssets_ReturnsAllAssets() {
-    List<Asset> expected = assetRepository.saveAll(dataFactory.createAssets(5));
+    List<Asset> expected =
+        assetMapper.entityToDto(
+            assetRepository.saveAll(assetMapper.dtoToEntity(dataFactory.createAssets(5))));
 
     ResponseSpec response =
         webClient.get().uri("/assets").accept(MediaType.APPLICATION_JSON).exchange();
@@ -86,13 +87,18 @@ class AssetApiIT extends ContainerizedTest {
 
   @Test
   void Create_RequiredAssetPropertiesAreEmpty_ReturnBadRequest() {
-    Asset invalidAsset = new Asset();
+    Asset invalidAsset = Asset.of(null, null, MqttNetworkConfiguration.of(null, null));
     List<Violation> expected =
         Arrays.asList(
             new Violation("name", messageSource.getMessage("validation.asset.name", null, null)),
             new Violation(
-                "networkConfiguration",
-                messageSource.getMessage("validation.asset.networkConfiguration", null, null)));
+                "topic",
+                messageSource.getMessage(
+                    "validation.asset.networkConfiguration.mqtt.topic", null, null)),
+            new Violation(
+                "enabled",
+                messageSource.getMessage(
+                    "validation.asset.networkConfiguration.mqtt.enabled", null, null)));
 
     ResponseSpec response =
         webClient
@@ -114,7 +120,9 @@ class AssetApiIT extends ContainerizedTest {
 
   @Test
   void FindById_GetAsset_ReturnAsset() {
-    Asset expected = assetRepository.save(dataFactory.createAsset());
+    Asset expected =
+        assetMapper.entityToDto(
+            assetRepository.save(assetMapper.dtoToEntity(dataFactory.createAsset())));
 
     ResponseSpec response =
         webClient
@@ -167,7 +175,9 @@ class AssetApiIT extends ContainerizedTest {
 
   @Test
   void Update_UpdateAsset_ReturnAsset() {
-    Asset expected = assetRepository.save(dataFactory.createAsset());
+    Asset expected =
+        assetMapper.entityToDto(
+            assetRepository.save(assetMapper.dtoToEntity(dataFactory.createAsset())));
     expected.setName(dataFactory.createAssetName());
     expected.setNetworkConfiguration(dataFactory.createMqttNetworkConfiguration());
 
@@ -219,7 +229,9 @@ class AssetApiIT extends ContainerizedTest {
 
   @Test
   void Delete_DeleteAsset_ReturnNoContent() {
-    Asset expected = assetRepository.save(dataFactory.createAsset());
+    Asset expected =
+        assetMapper.entityToDto(
+            assetRepository.save(assetMapper.dtoToEntity(dataFactory.createAsset())));
 
     ResponseSpec response =
         webClient

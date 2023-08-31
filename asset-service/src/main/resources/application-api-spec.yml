@@ -1,5 +1,5 @@
 springdoc:
-  show-actuator: 'false'
+  show-actuator: false
 
 management:
   tracing:

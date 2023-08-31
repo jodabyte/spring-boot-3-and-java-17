@@ -1,7 +1,7 @@
 package de.jodabyte.springboot3andjava17.common.validation;
 
-import de.jodabyte.springboot3andjava17.core.validation.ValidationErrorResponse;
-import de.jodabyte.springboot3andjava17.core.validation.Violation;
+import de.jodabyte.springboot3andjava17.core.asset.validation.ValidationErrorResponse;
+import de.jodabyte.springboot3andjava17.core.asset.validation.Violation;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path.Node;

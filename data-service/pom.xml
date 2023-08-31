@@ -57,7 +57,7 @@
   <dependencies>
     <dependency>
       <groupId>de.jodabyte.springboot3andjava17</groupId>
-      <artifactId>core</artifactId>
+      <artifactId>core-asset-service</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

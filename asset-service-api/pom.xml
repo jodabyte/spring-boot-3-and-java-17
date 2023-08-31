@@ -72,13 +72,13 @@
               <invokerPackage>${openapi-base-package}</invokerPackage>
               <apiPackage>${openapi-base-package}.api</apiPackage>
               <importMappings>
-                <importMapping>Ping=de.jodabyte.springboot3andjava17.core.asset.Ping</importMapping>
-                <importMapping>Asset=de.jodabyte.springboot3andjava17.core.asset.Asset</importMapping>
+                <importMapping>Ping=de.jodabyte.springboot3andjava17.core.ping.Ping</importMapping>
+                <importMapping>Asset=de.jodabyte.springboot3andjava17.asset.model.Asset</importMapping>
                 <importMapping>NetworkConfiguration=de.jodabyte.springboot3andjava17.core.asset.NetworkConfiguration</importMapping>
                 <importMapping>NetworkConfigurationType=de.jodabyte.springboot3andjava17.core.asset.NetworkConfigurationType</importMapping>
-                <importMapping>MqttNetworkConfiguration=de.jodabyte.springboot3andjava17.core.asset.MqttNetworkConfiguration</importMapping>
-                <importMapping>Violation=de.jodabyte.springboot3andjava17.core.validation.Violation</importMapping>
-                <importMapping>ValidationErrorResponse=de.jodabyte.springboot3andjava17.core.validation.ValidationErrorResponse</importMapping>
+                <importMapping>MqttNetworkConfiguration=de.jodabyte.springboot3andjava17.asset.model.MqttNetworkConfiguration</importMapping>
+                <importMapping>Violation=de.jodabyte.springboot3andjava17.core.asset.validation.Violation</importMapping>
+                <importMapping>ValidationErrorResponse=de.jodabyte.springboot3andjava17.core.asset.validation.ValidationErrorResponse</importMapping>
               </importMappings>
 
               <configOptions>
@@ -106,7 +106,7 @@
   <dependencies>
     <dependency>
       <groupId>de.jodabyte.springboot3andjava17</groupId>
-      <artifactId>core</artifactId>
+      <artifactId>core-asset-service</artifactId>
       <version>${project.version}</version>
     </dependency>
 

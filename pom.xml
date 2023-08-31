@@ -16,13 +16,14 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>core</module>
+    <module>core-asset-service</module>
     <module>core-kafka</module>
+    <module>core-mqtt</module>
     <module>core-test</module>
     <module>asset-service</module>
     <module>asset-service-api</module>
-    <module>integration-service</module>
     <module>data-service</module>
+    <module>integration-service</module>
   </modules>
 
   <properties>
@@ -35,6 +36,7 @@
     <apache-commons-collections.version>4.4</apache-commons-collections.version>
     <datafaker.version>2.0.1</datafaker.version>
     <flatten-maven-plugin.version>1.5.0</flatten-maven-plugin.version>
+    <mapstruct.version>1.5.5.Final</mapstruct.version>
     <maven-checkstyle-plugin.version>3.3.0</maven-checkstyle-plugin.version>
     <openapi-generator-maven-plugin.version>6.6.0</openapi-generator-maven-plugin.version>
     <openapi-jackson-databind-nullable.version>0.2.6</openapi-jackson-databind-nullable.version>
@@ -59,6 +61,7 @@
 
   <profiles>
     <profile>
+      <!-- Build for docker -->
       <id>docker</id>
       <activation>
         <activeByDefault>true</activeByDefault>
@@ -69,12 +72,14 @@
       </properties>
     </profile>
     <profile>
+      <!-- Build to run locally -->
       <id>local</id>
       <properties>
         <spring.profiles.active>local</spring.profiles.active>
       </properties>
     </profile>
     <profile>
+      <!-- Build for openapi spec generation-->
       <id>api-spec</id>
       <properties>
         <spring.profiles.active>api-spec,local</spring.profiles.active>
@@ -112,21 +117,6 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>${java.version}</source>
-          <target>${java.version}</target>
-          <annotationProcessorPaths>
-            <path>
-              <groupId>org.projectlombok</groupId>
-              <artifactId>lombok</artifactId>
-              <version>${lombok.version}</version>
-            </path>
-          </annotationProcessorPaths>
-        </configuration>
-      </plugin>
       <plugin> <!-- Code formatting -->
         <groupId>com.diffplug.spotless</groupId>
         <artifactId>spotless-maven-plugin</artifactId>
@@ -148,6 +138,28 @@
 
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <configuration>
+            <source>${java.version}</source>
+            <target>${java.version}</target>
+          </configuration>
+          <executions>
+            <execution>
+              <id>default-compile</id>
+              <configuration>
+                <annotationProcessorPaths>
+                  <path>
+                    <groupId>org.projectlombok</groupId>
+                    <artifactId>lombok</artifactId>
+                    <version>${lombok.version}</version>
+                  </path>
+                </annotationProcessorPaths>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
         <plugin> <!-- spring boot -->
           <groupId>org.springframework.boot</groupId>
           <artifactId>spring-boot-maven-plugin</artifactId>
@@ -176,6 +188,7 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <configuration>
+            <!-- Required since docker container shutdown takes some time -->
             <forkedProcessExitTimeoutInSeconds>120</forkedProcessExitTimeoutInSeconds>
           </configuration>
         </plugin>
@@ -232,6 +245,10 @@
       <artifactId>commons-collections4</artifactId>
       <version>${apache-commons-collections.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+    </dependency>
   </dependencies>
 
   <dependencyManagement>
@@ -250,6 +267,11 @@
         <groupId>io.swagger.core.v3</groupId>
         <artifactId>swagger-core-jakarta</artifactId>
         <version>${swagger-core-jakarta.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mapstruct</groupId>
+        <artifactId>mapstruct</artifactId>
+        <version>${mapstruct.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

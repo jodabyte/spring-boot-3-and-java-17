@@ -17,7 +17,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
                   name = "host",
                   defaultValue = "localhost",
                   allowableValues = {"localhost", "asset-service"}),
-              @ServerVariable(name = "port", defaultValue = "8080")
+              @ServerVariable(name = "port", defaultValue = "8081")
             }))
 @SpringBootApplication
 public class AssetServiceApplication {

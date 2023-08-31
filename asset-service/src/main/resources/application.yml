@@ -1,8 +1,21 @@
+application:
+  version: @project.version@
+
+server:
+  port: 8081
+
+logging:
+  pattern:
+    level: '%5p [%X{traceId:-}:%X{spanId:-}]'
+
 spring:
-  config:
-    import: application-core.yml
   application:
     name: @project.name@
+  profiles:
+    active: @spring.profiles.active@
+  output:
+    ansi:
+      enabled: always
   data:
     mongodb:
       database: app-data
@@ -17,15 +30,11 @@ management:
     enabled: true
     sampling:
       probability: 1.0
-  metrics:
-    mongo:
-      command:
-        enabled: false     
   endpoints:
     enabled-by-default: true
     web:
       exposure:
-        include: *
+        include: '*'
   endpoint:
     configprops:
       show-values: always
