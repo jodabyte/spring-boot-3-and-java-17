@@ -6,8 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.jodabyte.springboot3andjava17.core.asset.Asset;
 import de.jodabyte.springboot3andjava17.core.asset.MqttNetworkConfiguration;
 import de.jodabyte.springboot3andjava17.core.asset.NetworkConfigurationType;
+import de.jodabyte.springboot3andjava17.core.kafka.KafkaContract;
 import de.jodabyte.springboot3andjava17.core.mqtt.Zigbee2MqttDevices;
-import de.jodabyte.springboot3andjava17.kafka.KafkaConfig;
 import de.jodabyte.springboot3andjava17.mqtt.AbstractHandler;
 import de.jodabyte.springboot3andjava17.mqtt.zigbee2mqtt.model.BridgeDevice;
 import de.jodabyte.springboot3andjava17.openapi.asset.api.AssetsApi;
@@ -15,41 +15,37 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.ListUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.retry.support.RetryTemplate;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.stereotype.Component;
 
 @Slf4j
-@Validated
+@Component
 public class Zigbee2MqttHandler extends AbstractHandler {
 
   public static final String TOPIC_BRIDGE_UPDATE = "zigbee2mqtt/bridge/devices";
   public static final String DEVICE_UPDATE_TOPIC_FORMAT = "zigbee2mqtt/%s";
 
+  private RetryTemplate retryTemplate;
+  private AssetsApi assetServiceApi;
+  private MqttPahoMessageDrivenChannelAdapter mqttInboundClient;
+  private KafkaTemplate<String, Object> kafkaClient;
+
   private final ObjectMapper objectMapper = new ObjectMapper();
-  private final RetryTemplate retryTemplate;
-  private final AssetsApi assetServiceApi;
-  private final MqttPahoMessageDrivenChannelAdapter mqttInboundClient;
-  private final KafkaTemplate<String, Object> kafkaClient;
   private List<Asset> assetCache = new ArrayList<>();
 
-  public Zigbee2MqttHandler(
-      RetryTemplate retryTemplate,
-      AssetsApi assetServiceApi,
-      MqttPahoMessageDrivenChannelAdapter mqttInboundClient,
-      KafkaTemplate<String, Object> kafkaClient) {
+  public Zigbee2MqttHandler() {
     super(Arrays.asList(TOPIC_BRIDGE_UPDATE));
-    this.retryTemplate = retryTemplate;
-    this.assetServiceApi = assetServiceApi;
-    this.mqttInboundClient = mqttInboundClient;
-    this.kafkaClient = kafkaClient;
   }
 
   @Override
@@ -78,11 +74,18 @@ public class Zigbee2MqttHandler extends AbstractHandler {
       Asset asset = assetContainer.get();
       try {
         Object data = objectMapper.readValue((String) payload, deviceContainer.get().getType());
-        kafkaClient.send(
-            MessageBuilder.withPayload(data)
-                .setHeader(KafkaHeaders.KEY, asset.getName())
-                .setHeader(KafkaHeaders.TOPIC, KafkaConfig.TOPIC_MQTT)
-                .build());
+        CompletableFuture<SendResult<String, Object>> future =
+            kafkaClient.send(
+                MessageBuilder.withPayload(asset.getName())
+                    .setHeader(KafkaHeaders.KEY, asset.getName())
+                    .setHeader(KafkaHeaders.TOPIC, KafkaContract.TOPIC_MQTT)
+                    .build());
+        future.whenComplete(
+            (sendResult, throwable) -> {
+              if (throwable != null) {
+                log.error("Failed to send message to kafka: {}", throwable.getLocalizedMessage());
+              }
+            });
       } catch (JsonProcessingException e) {
         log.error("Failed to parse payload for topic={}.", topic, e);
       }
@@ -163,15 +166,16 @@ public class Zigbee2MqttHandler extends AbstractHandler {
                         device ->
                             device.getFriendlyName().equals(asset.getName())
                                 && !((MqttNetworkConfiguration) asset.getNetworkConfiguration())
-                                    .isEnabled()))
+                                    .getEnabled()))
         .forEach(this::enableAsset);
   }
 
   private void createAsset(BridgeDevice device) {
     Asset assetDto =
         Asset.of(
+            null,
             device.getFriendlyName(),
-            new MqttNetworkConfiguration(
+            MqttNetworkConfiguration.of(
                 String.format(DEVICE_UPDATE_TOPIC_FORMAT, device.getFriendlyName()), true));
     Asset asset = assetServiceApi.create(assetDto);
     this.assetCache.add(asset);
@@ -221,13 +225,13 @@ public class Zigbee2MqttHandler extends AbstractHandler {
   private Stream<Asset> getOnlyEnabledAssets() {
     return this.assetCache.stream()
         .filter(
-            config -> ((MqttNetworkConfiguration) config.getNetworkConfiguration()).isEnabled());
+            config -> ((MqttNetworkConfiguration) config.getNetworkConfiguration()).getEnabled());
   }
 
   private Stream<Asset> getOnlyDisabledAssets() {
     return this.assetCache.stream()
         .filter(
-            config -> !((MqttNetworkConfiguration) config.getNetworkConfiguration()).isEnabled());
+            config -> !((MqttNetworkConfiguration) config.getNetworkConfiguration()).getEnabled());
   }
 
   private Optional<Asset> getAssetByTopic(String topic) {
@@ -238,5 +242,25 @@ public class Zigbee2MqttHandler extends AbstractHandler {
                     .getTopic()
                     .equals(topic))
         .findFirst();
+  }
+
+  @Autowired
+  public void setRetryTemplate(RetryTemplate retryTemplate) {
+    this.retryTemplate = retryTemplate;
+  }
+
+  @Autowired
+  public void setAssetServiceApi(AssetsApi assetServiceApi) {
+    this.assetServiceApi = assetServiceApi;
+  }
+
+  @Autowired
+  public void setMqttInboundClient(MqttPahoMessageDrivenChannelAdapter mqttInboundClient) {
+    this.mqttInboundClient = mqttInboundClient;
+  }
+
+  @Autowired
+  public void setKafkaClient(KafkaTemplate<String, Object> kafkaClient) {
+    this.kafkaClient = kafkaClient;
   }
 }

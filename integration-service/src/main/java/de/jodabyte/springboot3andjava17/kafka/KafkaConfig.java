@@ -15,21 +15,19 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 @Configuration
 public class KafkaConfig {
 
-  public static final String TOPIC_MQTT = "mqtt";
+  @Bean
+  public KafkaTemplate<String, Object> zigbee2MqttKafkaTemplate(
+      DefaultKafkaProducerFactory<String, Object> zigbee2MqttProducerFactory) {
+    return new KafkaTemplate<>(zigbee2MqttProducerFactory);
+  }
 
   @Bean
-  public DefaultKafkaProducerFactory<String, Object> producerFactory(
+  public DefaultKafkaProducerFactory<String, Object> zigbee2MqttProducerFactory(
       KafkaProperties kafkaProperties) {
     Map<String, Object> properties = kafkaProperties.buildProducerProperties();
     properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
     properties.put(JsonSerializer.TYPE_MAPPINGS, Zigbee2MqttDevices.getTypeMappings());
     log.info("KafkaProducerProperties: {}", properties);
     return new DefaultKafkaProducerFactory<>(properties);
-  }
-
-  @Bean
-  public KafkaTemplate<String, Object> kafkaTemplate(
-      DefaultKafkaProducerFactory<String, Object> producerFactory) {
-    return new KafkaTemplate<>(producerFactory);
   }
 }

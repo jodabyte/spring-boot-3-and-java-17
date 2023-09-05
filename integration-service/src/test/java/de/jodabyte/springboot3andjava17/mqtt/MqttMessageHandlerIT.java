@@ -24,7 +24,7 @@ import org.springframework.messaging.Message;
 @ExtendWith(OutputCaptureExtension.class)
 @MockBean(Zigbee2MqttHandler.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class MqttMessageHandlerTest extends ContainerizedTest {
+class MqttMessageHandlerIT extends ContainerizedTest {
 
   @Autowired private MqttMessageHandler sut;
   @Autowired private Zigbee2MqttHandler handlerMock;

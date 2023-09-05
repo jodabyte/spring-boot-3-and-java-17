@@ -12,10 +12,22 @@
   <version>${revision}</version>
   <name>core-mqtt</name>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <suppressionsLocation>${project.parent.basedir}${checkstyle-suppressions-path}</suppressionsLocation>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-annotations</artifactId>
+      <artifactId>jackson-databind</artifactId>
     </dependency>
     <dependency>
       <groupId>jakarta.annotation</groupId>

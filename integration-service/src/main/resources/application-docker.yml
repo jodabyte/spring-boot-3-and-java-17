@@ -1,9 +1,9 @@
 application:
   asset-service:
-    url: http://asset-service:8080
+    url: http://asset-service:8081
 
 mqtt:
-  host: homeassistant
+  host: @mqtt.host@
   port: 1883
   clientId: ${spring.application.name}
   username: @mqtt.username@

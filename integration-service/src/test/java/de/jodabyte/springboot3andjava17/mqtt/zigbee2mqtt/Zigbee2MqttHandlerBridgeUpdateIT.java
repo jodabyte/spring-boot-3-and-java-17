@@ -4,25 +4,23 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import de.jodabyte.springboot3andjava17.ContainerizedTest;
 import de.jodabyte.springboot3andjava17.openapi.asset.api.AssetsApi;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-class Zigbee2MqttHandlerTest extends ContainerizedTest {
+class Zigbee2MqttHandlerBridgeUpdateIT extends ContainerizedTest {
+
   @Autowired private MqttPahoMessageDrivenChannelAdapter mqttClient;
+  @Autowired private AssetsApi assetServiceApi;
   @Autowired private Zigbee2MqttHandler sut;
 
-  @Autowired private AssetsApi assetServiceApi;
-
   @Test
-  void Handle_OnlyUnsupportedDevices_TopicListIsEmpty() throws IOException {
-    String payload = getFileContentAsString("unsupported_devices.json");
+  void Handle_OnlyUnsupportedDevices_TopicListIsEmpty() {
+    String payload =
+        getResourceContentAsString(String.format("testdata/%s", "unsupported_devices.json"));
 
     this.sut.handle(Zigbee2MqttHandler.TOPIC_BRIDGE_UPDATE, payload);
 
@@ -34,9 +32,10 @@ class Zigbee2MqttHandlerTest extends ContainerizedTest {
   }
 
   @Test
-  void Handle_SubscribeToSupportedDevices_TopicListHasCorrectSize() throws IOException {
+  void Handle_SubscribeToSupportedDevices_TopicListHasCorrectSize() {
     int expectedTopicSize = 1;
-    String payload = getFileContentAsString("unknown_devices.json");
+    String payload =
+        getResourceContentAsString(String.format("testdata/%s", "unknown_devices.json"));
 
     this.sut.handle(Zigbee2MqttHandler.TOPIC_BRIDGE_UPDATE, payload);
 
@@ -48,12 +47,12 @@ class Zigbee2MqttHandlerTest extends ContainerizedTest {
   }
 
   @Test
-  void Handle_UnsubscribeFromRemovedDevices_TopicListHasCorrectSize()
-      throws IOException, InterruptedException {
+  void Handle_UnsubscribeFromRemovedDevices_TopicListHasCorrectSize() {
     int expectedTopicSizeAfterSubscribeToUnknownDevices = 1;
     int expectedTopicSizeAfterUnsubscribeFromRemovedDevices = 0;
 
-    String payload = getFileContentAsString("unknown_devices.json");
+    String payload =
+        getResourceContentAsString(String.format("testdata/%s", "unknown_devices.json"));
     this.sut.handle(Zigbee2MqttHandler.TOPIC_BRIDGE_UPDATE, payload);
 
     assertEquals(
@@ -62,7 +61,7 @@ class Zigbee2MqttHandlerTest extends ContainerizedTest {
             .filter(topic -> !sut.getTopics().contains(topic))
             .count());
 
-    payload = getFileContentAsString("removed_device.json");
+    payload = getResourceContentAsString(String.format("testdata/%s", "removed_device.json"));
     this.sut.handle(Zigbee2MqttHandler.TOPIC_BRIDGE_UPDATE, payload);
 
     assertEquals(
@@ -75,10 +74,5 @@ class Zigbee2MqttHandlerTest extends ContainerizedTest {
   @AfterEach
   void afterEach() {
     assetServiceApi.all().forEach(asset -> assetServiceApi.delete(asset.getId()));
-  }
-
-  private String getFileContentAsString(String fileName) throws IOException {
-    return new ClassPathResource(String.format("testdata/%s", fileName))
-        .getContentAsString(StandardCharsets.UTF_8);
   }
 }

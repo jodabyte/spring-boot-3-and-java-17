@@ -17,8 +17,7 @@ public class MqttHandler {
 
   private static final Consumed<String, JsonSerde<?>> INPUT_PARAMETERS =
       Consumed.with(
-          Serdes.String(),
-          KafkaSerdes.JSON_TYPE_MAPPING_SERDE(Zigbee2MqttDevices.getTypeMappings()));
+          Serdes.String(), KafkaSerdes.jsonTypeMappingSerde(Zigbee2MqttDevices.getTypeMappings()));
   private static final Produced<String, String> OUTPUT_PARAMETERS =
       Produced.with(Serdes.String(), Serdes.String());
 

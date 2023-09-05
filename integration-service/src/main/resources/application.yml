@@ -1,13 +1,14 @@
-spring:
-  config:
-    import: application-core.yml
-  application:
-    name: '@project.name@'
-  docker:
-    compose:
-      file: @docker-compose-path@
-  kafka:
-    client-id: '@project.name@'
-    listener:
-      log-container-config: true
+logging:
+  pattern:
+    level: '%5p [%X{traceId:-}:%X{spanId:-}]'
 
+spring:
+  application:
+    name: @project.name@
+  profiles:
+    active: @spring.profiles.active@
+  output:
+    ansi:
+      enabled: always
+  kafka:
+    client-id: @project.name@

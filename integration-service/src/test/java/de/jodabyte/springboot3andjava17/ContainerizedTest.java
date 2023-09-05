@@ -1,8 +1,13 @@
 package de.jodabyte.springboot3andjava17;
 
+import de.jodabyte.springboot3andjava17.config.KafkaTestConfig;
+import de.jodabyte.springboot3andjava17.core.kafka.KafkaContract;
 import de.jodabyte.springboot3andjava17.test.AbstractIntegrationTest;
 import de.jodabyte.springboot3andjava17.test.container.TestContainerContract;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Import;
+import org.springframework.kafka.test.context.EmbeddedKafka;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
@@ -13,6 +18,11 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @TestPropertySource(
     properties =
         "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration")
+@EmbeddedKafka(
+    partitions = 1,
+    topics = {KafkaContract.TOPIC_MQTT})
+@DirtiesContext
+@Import({KafkaTestConfig.class})
 @Testcontainers
 public abstract class ContainerizedTest extends AbstractIntegrationTest {
 
@@ -29,11 +39,11 @@ public abstract class ContainerizedTest extends AbstractIntegrationTest {
 
   @DynamicPropertySource
   static void setProperties(DynamicPropertyRegistry registry) {
-    int port =
+    int mqttPort =
         ENVIRONMENT.getServicePort(
             TestContainerContract.MOSQUITTO_NAME, TestContainerContract.MOSQUITTO_PORT);
-    registry.add("mqtt.port", () -> port);
-    log.info("Updated mqtt.port to {}", port);
+    registry.add("mqtt.port", () -> mqttPort);
+    log.info("Updated mqtt.port to {}", mqttPort);
     String url =
         String.format(
             "http://localhost:%d",

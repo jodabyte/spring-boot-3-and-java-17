@@ -1,0 +1,10 @@
+mqtt:
+  host: localhost
+
+spring:
+  kafka:
+    bootstrap-servers: {spring.embedded.kafka.brokers}
+    consumer:
+      bootstrap-servers: ${spring.embedded.kafka.brokers}
+    producer:
+      bootstrap-servers: ${spring.embedded.kafka.brokers}

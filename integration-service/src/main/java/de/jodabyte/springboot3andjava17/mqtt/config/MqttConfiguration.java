@@ -2,7 +2,6 @@ package de.jodabyte.springboot3andjava17.mqtt.config;
 
 import de.jodabyte.springboot3andjava17.mqtt.MqttMessageHandler;
 import de.jodabyte.springboot3andjava17.mqtt.zigbee2mqtt.Zigbee2MqttHandler;
-import de.jodabyte.springboot3andjava17.openapi.asset.api.AssetsApi;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +13,7 @@ import org.springframework.integration.mqtt.core.DefaultMqttPahoClientFactory;
 import org.springframework.integration.mqtt.core.MqttPahoClientFactory;
 import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
 import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.MessageChannel;
-import org.springframework.retry.support.RetryTemplate;
 
 @Slf4j
 @Configuration
@@ -25,15 +22,6 @@ public class MqttConfiguration {
   private static final String CLIENT_ID_FORMAT = "%s-%d";
 
   @Autowired private MqttProperties properties;
-
-  @Bean
-  public Zigbee2MqttHandler getZigbee2MqttHandler(
-      RetryTemplate retryTemplate,
-      AssetsApi assetServiceApi,
-      MqttPahoMessageDrivenChannelAdapter mqttInboundClient,
-      KafkaTemplate<String, Object> kafkaTemplate) {
-    return new Zigbee2MqttHandler(retryTemplate, assetServiceApi, mqttInboundClient, kafkaTemplate);
-  }
 
   @Bean
   public MqttConnectOptions mqttConnectOptions() {

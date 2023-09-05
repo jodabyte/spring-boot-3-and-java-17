@@ -65,27 +65,19 @@
               <generateModelTests>false</generateModelTests>
               <generateApiTests>false</generateApiTests>
 
-              <groupId>${project.groupId}</groupId>
-              <artifactId>${project.name}</artifactId>
-              <artifactVersion>${project.version}</artifactVersion>
-
               <invokerPackage>${openapi-base-package}</invokerPackage>
               <apiPackage>${openapi-base-package}.api</apiPackage>
               <importMappings>
                 <importMapping>Ping=de.jodabyte.springboot3andjava17.core.ping.Ping</importMapping>
-                <importMapping>Asset=de.jodabyte.springboot3andjava17.asset.model.Asset</importMapping>
+                <importMapping>Asset=de.jodabyte.springboot3andjava17.core.asset.Asset</importMapping>
                 <importMapping>NetworkConfiguration=de.jodabyte.springboot3andjava17.core.asset.NetworkConfiguration</importMapping>
                 <importMapping>NetworkConfigurationType=de.jodabyte.springboot3andjava17.core.asset.NetworkConfigurationType</importMapping>
-                <importMapping>MqttNetworkConfiguration=de.jodabyte.springboot3andjava17.asset.model.MqttNetworkConfiguration</importMapping>
+                <importMapping>MqttNetworkConfiguration=de.jodabyte.springboot3andjava17.core.asset.MqttNetworkConfiguration</importMapping>
                 <importMapping>Violation=de.jodabyte.springboot3andjava17.core.asset.validation.Violation</importMapping>
                 <importMapping>ValidationErrorResponse=de.jodabyte.springboot3andjava17.core.asset.validation.ValidationErrorResponse</importMapping>
               </importMappings>
 
               <configOptions>
-                <parentGroupId>${project.parent.groupId}</parentGroupId>
-                <parentArtifactId>${project.parent.artifactId}</parentArtifactId>
-                <parentVersion>${project.parent.version}</parentVersion>
-
                 <useJakartaEe>true</useJakartaEe>
                 <webclientBlockingOperations>true</webclientBlockingOperations>
               </configOptions>
@@ -111,9 +103,14 @@
     </dependency>
 
     <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-webflux</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.openapitools</groupId>
       <artifactId>jackson-databind-nullable</artifactId>
       <version>${openapi-jackson-databind-nullable.version}</version>
     </dependency>
+
   </dependencies>
 </project>

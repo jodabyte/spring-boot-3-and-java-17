@@ -12,27 +12,12 @@ services:
     image: asset-service:@project.version@
     container_name: asset-service
     ports:
-      - "8080:8080"
+      - "8081:8081"
     networks:
       - app-tier
     depends_on:
-      mongo:
-        condition: service_started
-  kafka-ui:
-    image: @docker-image-kafka-ui@
-    container_name: kafka-ui
-    ports:
-      - "8081:8080"
-    depends_on:
-      - kafka
-    environment:
-      KAFKA_CLUSTERS_0_NAME: local
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
-      DYNAMIC_CONFIG_ENABLED: true
-    volumes:
-      - kafka_ui_conf:/config.yml
-    networks:
-      - app-tier
+      - mongo
+
   kafka:
     image: @docker-image-kafka@
     container_name: kafka
@@ -49,9 +34,19 @@ services:
       - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
     networks:
       - app-tier
-
-volumes:
-  kafka_ui_conf:
+  kafka-ui:
+    image: @docker-image-kafka-ui@
+    container_name: kafka-ui
+    ports:
+      - "8082:8080"
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+      DYNAMIC_CONFIG_ENABLED: true
+    networks:
+      - app-tier
 
 networks:
   app-tier:

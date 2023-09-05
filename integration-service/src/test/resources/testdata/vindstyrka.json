@@ -1,0 +1,13 @@
+{
+  "humidity": 64,
+  "linkquality": 136,
+  "pm25": 1,
+  "temperature": 23,
+  "update": {
+    "installed_version": 16777233,
+    "latest_version": 16777233,
+    "state": "idle"
+  },
+  "update_available": null,
+  "voc_index": 218
+}
