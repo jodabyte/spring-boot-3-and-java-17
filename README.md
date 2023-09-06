@@ -2,7 +2,7 @@
 Spring Boot 3 and Java 17 powered things. 
 - Back-end
     - Spring-boot-starter
-    - MongoDB, Eclipse Mosquitto
+    - MongoDB, Eclipse Mosquitto, Kafka
     - OpenAPI, OpenApi Generator, Swagger
     - Dockerimage generation with spring-boot-maven-plugin
     - Docker compose for dependency management

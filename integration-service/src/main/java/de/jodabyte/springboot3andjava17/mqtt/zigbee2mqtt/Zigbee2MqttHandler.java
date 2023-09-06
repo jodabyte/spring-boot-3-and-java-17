@@ -76,7 +76,7 @@ public class Zigbee2MqttHandler extends AbstractHandler {
         Object data = objectMapper.readValue((String) payload, deviceContainer.get().getType());
         CompletableFuture<SendResult<String, Object>> future =
             kafkaClient.send(
-                MessageBuilder.withPayload(asset.getName())
+                MessageBuilder.withPayload(data)
                     .setHeader(KafkaHeaders.KEY, asset.getName())
                     .setHeader(KafkaHeaders.TOPIC, KafkaContract.TOPIC_MQTT)
                     .build());

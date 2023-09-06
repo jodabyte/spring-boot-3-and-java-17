@@ -29,13 +29,6 @@
         <spring.profiles.active>local</spring.profiles.active>
       </properties>
     </profile>
-    <profile>
-      <id>api-spec</id>
-      <properties>
-        <spring.profiles.active>api-spec,local</spring.profiles.active>
-        <maven.test.skip>true</maven.test.skip>
-      </properties>
-    </profile>
   </profiles>
 
   <build>
@@ -57,7 +50,7 @@
   <dependencies>
     <dependency>
       <groupId>de.jodabyte.springboot3andjava17</groupId>
-      <artifactId>core-asset-service</artifactId>
+      <artifactId>core-mqtt</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -67,8 +60,13 @@
     </dependency>
 
     <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.kafka</groupId>
+      <artifactId>kafka-streams</artifactId>
+    </dependency>
     </dependency>
   </dependencies>
 </project>

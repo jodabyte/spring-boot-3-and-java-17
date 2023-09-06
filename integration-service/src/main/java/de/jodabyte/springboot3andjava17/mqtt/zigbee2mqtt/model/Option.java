@@ -6,7 +6,16 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.annotation.Generated;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({"access", "description", "name", "property", "type", "value_max", "value_min"})
+@JsonPropertyOrder({
+  "access",
+  "description",
+  "label",
+  "name",
+  "property",
+  "type",
+  "value_max",
+  "value_min"
+})
 @Generated("jsonschema2pojo")
 public class Option {
 
@@ -15,6 +24,9 @@ public class Option {
 
   @JsonProperty("description")
   private String description;
+
+  @JsonProperty("label")
+  private String label;
 
   @JsonProperty("name")
   private String name;
@@ -49,6 +61,16 @@ public class Option {
   @JsonProperty("description")
   public void setDescription(String description) {
     this.description = description;
+  }
+
+  @JsonProperty("label")
+  public String getLabel() {
+    return label;
+  }
+
+  @JsonProperty("label")
+  public void setLabel(String label) {
+    this.label = label;
   }
 
   @JsonProperty("name")
@@ -115,6 +137,10 @@ public class Option {
     sb.append("description");
     sb.append('=');
     sb.append(((this.description == null) ? "<null>" : this.description));
+    sb.append(',');
+    sb.append("label");
+    sb.append('=');
+    sb.append(((this.label == null) ? "<null>" : this.label));
     sb.append(',');
     sb.append("name");
     sb.append('=');

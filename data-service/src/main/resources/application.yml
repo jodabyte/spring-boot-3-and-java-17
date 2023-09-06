@@ -1,12 +1,15 @@
 spring:
-  config:
-    import: application-core.yml
   application:
-    name: '@project.name@'
+    name: @project.name@
+  profiles:
+    active: @spring.profiles.active@
+  output:
+    ansi:
+      enabled: always
   kafka:
-    client-id: '@project.name@'
+    client-id: @project.name@
     streams:
-      application-id: '@project.name@'
+      application-id: @project.name@
       properties:
         default:
           key:

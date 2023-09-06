@@ -9,6 +9,7 @@ import jakarta.annotation.Generated;
 @JsonPropertyOrder({
   "access",
   "description",
+  "label",
   "name",
   "property",
   "type",
@@ -24,6 +25,9 @@ public class Expose {
 
   @JsonProperty("description")
   private String description;
+
+  @JsonProperty("label")
+  private String label;
 
   @JsonProperty("name")
   private String name;
@@ -61,6 +65,16 @@ public class Expose {
   @JsonProperty("description")
   public void setDescription(String description) {
     this.description = description;
+  }
+
+  @JsonProperty("label")
+  public String getLabel() {
+    return label;
+  }
+
+  @JsonProperty("label")
+  public void setLabel(String label) {
+    this.label = label;
   }
 
   @JsonProperty("name")
@@ -137,6 +151,10 @@ public class Expose {
     sb.append("description");
     sb.append('=');
     sb.append(((this.description == null) ? "<null>" : this.description));
+    sb.append(',');
+    sb.append("label");
+    sb.append('=');
+    sb.append(((this.label == null) ? "<null>" : this.label));
     sb.append(',');
     sb.append("name");
     sb.append('=');
