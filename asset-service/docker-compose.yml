@@ -8,6 +8,13 @@ services:
       - "27017:27017"
     networks:
       - app-tier
+  zipkin:
+    image: @docker-image-zipkin@
+    container_name: zipkin
+    ports:
+      - "9411:9411"
+    networks:
+      - app-tier
 
 networks:
   app-tier:

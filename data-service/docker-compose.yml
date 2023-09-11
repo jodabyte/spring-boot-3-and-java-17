@@ -8,6 +8,13 @@ services:
       - "27017:27017"
     networks:
       - app-tier
+  zipkin:
+    image: @docker-image-zipkin@
+    container_name: zipkin
+    ports:
+      - "9411:9411"
+    networks:
+      - app-tier
   asset-service:
     image: asset-service:@project.version@
     container_name: asset-service
@@ -17,6 +24,7 @@ services:
       - app-tier
     depends_on:
       - mongo
+      - zipkin
 
   kafka:
     image: @docker-image-kafka@

@@ -1,3 +1,7 @@
+logging:
+  pattern:
+    level: '%5p [%X{traceId:-}:%X{spanId:-}]'
+
 spring:
   application:
     name: @project.name@

@@ -20,6 +20,7 @@ Spring Boot 3 and Java 17 powered things.
     - Monitoring using spring boot actuator
         - Tracing using Micrometer
             - Format: OpenTelemetry
+            - Export: Zipkin
     - Profiles:
         - local deployment
         - docker deployment
@@ -76,5 +77,6 @@ Use the docker compose file to create a stack in portainer.
 - asset service 
   - OpenAPI: [Swagger UI](http://localhost:8081/swagger-ui.html), [json](http://localhost:8081/v3/api-docs), [yaml](http://localhost:8081/v3/api-docs.yaml)
   - Monitoring: [Spring Actuator](http://localhost:8081/actuator)
+  - Tracing: [Zipkin](http://localhost:9411)
 - [Portainer](https://localhost:9443)
 - [SonarQube](http://localhost:9000)
