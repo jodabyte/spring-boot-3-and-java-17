@@ -48,12 +48,6 @@
     <swagger-core-jakarta.version>2.2.15</swagger-core-jakarta.version>
 
     <checkstyle-suppressions-path>\checkstyle\checkstyle-suppressions.xml</checkstyle-suppressions-path>
-    <docker-compose-path>${project.build.outputDirectory}\docker-compose.yml</docker-compose-path>
-    <docker-image-mongodb>mongodb/mongodb-community-server:6.0.8-ubi8</docker-image-mongodb>
-    <docker-image-kafka>bitnami/kafka:3.5.1</docker-image-kafka>
-    <docker-image-kafka-ui>provectuslabs/kafka-ui:v0.7.1</docker-image-kafka-ui>
-    <docker-image-mosquitto>eclipse-mosquitto:2.0.15-openssl</docker-image-mosquitto>
-    <docker-image-zipkin>openzipkin/zipkin:2.24.2</docker-image-zipkin>
     <openapi-spec-asset-service>asset-service.json</openapi-spec-asset-service>
     <openapi-spec-root-directory>openapi</openapi-spec-root-directory>
   </properties>

@@ -11,3 +11,5 @@ spring:
   output:
     ansi:
       enabled: always
+  main:
+    banner-mode: off

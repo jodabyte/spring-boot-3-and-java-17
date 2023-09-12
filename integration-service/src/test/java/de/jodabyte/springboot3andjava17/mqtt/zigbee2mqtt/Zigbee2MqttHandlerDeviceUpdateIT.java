@@ -1,6 +1,5 @@
 package de.jodabyte.springboot3andjava17.mqtt.zigbee2mqtt;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.jodabyte.springboot3andjava17.ContainerizedTest;
@@ -9,23 +8,27 @@ import java.time.Duration;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.system.CapturedOutput;
-import org.springframework.boot.test.system.OutputCaptureExtension;
+import org.springframework.context.ApplicationContext;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@ExtendWith(OutputCaptureExtension.class)
 public class Zigbee2MqttHandlerDeviceUpdateIT extends ContainerizedTest {
 
   @Autowired private EmbeddedKafkaBroker kafkaBroker;
   @Autowired private DefaultKafkaConsumerFactory<String, Object> consumerFactory;
-  @Autowired private Zigbee2MqttHandler sut;
+  private Zigbee2MqttHandler sut;
+
+  @BeforeEach
+  void beforeEach(ApplicationContext context) {
+    this.sut = context.getBean(Zigbee2MqttHandler.class);
+  }
 
   @Test
   void Handle_ReceivedDataIsForwardedToKafka_KafkaConsumerReceivesData() {
@@ -51,19 +54,18 @@ public class Zigbee2MqttHandlerDeviceUpdateIT extends ContainerizedTest {
   }
 
   @Test
-  void Handle_CouldNotMapPayloadToJson_LogMessage(CapturedOutput actualOutput) {
-    String expectedLogMessage = "Failed to parse payload for topic";
-
+  void Handle_CouldNotMapPayloadToJson_LogMessage() {
     String payload =
         getResourceContentAsString(String.format("testdata/%s", "unknown_devices.json"));
     this.sut.handle(Zigbee2MqttHandler.TOPIC_BRIDGE_UPDATE, payload);
 
+    this.sut.setAssetServiceApi(Mockito.spy(this.sut.getAssetServiceApi()));
     String device = "vindstyrka";
     payload = StringUtils.EMPTY;
     this.sut.handle(
         String.format(Zigbee2MqttHandler.DEVICE_UPDATE_TOPIC_FORMAT, device.toUpperCase()),
         payload);
 
-    assertThat(actualOutput).contains(expectedLogMessage);
+    Mockito.verify(this.sut.getAssetServiceApi(), Mockito.never()).all();
   }
 }

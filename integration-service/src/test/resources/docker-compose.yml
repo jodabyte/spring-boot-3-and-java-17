@@ -2,11 +2,11 @@ version: "3.9"
 
 services:
   mongo:
-    image: @docker-image-mongodb@
+    image: mongodb/mongodb-community-server:6.0.8-ubi8
   mosquitto:
-    image: @docker-image-mosquitto@
+    image: eclipse-mosquitto:2.0.15-openssl
     command: mosquitto -c /mosquitto-no-auth.conf
   asset-service:
-    image: asset-service:@project.version@
+    image: asset-service:0.0.1-SNAPSHOT
     depends_on:
       - mongo

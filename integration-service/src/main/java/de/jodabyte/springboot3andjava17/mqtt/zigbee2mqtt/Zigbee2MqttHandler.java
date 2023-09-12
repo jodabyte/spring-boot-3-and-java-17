@@ -18,6 +18,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.ListUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ public class Zigbee2MqttHandler extends AbstractHandler {
   public static final String DEVICE_UPDATE_TOPIC_FORMAT = "zigbee2mqtt/%s";
 
   private RetryTemplate retryTemplate;
-  private AssetsApi assetServiceApi;
+  @Getter private AssetsApi assetServiceApi;
   private MqttPahoMessageDrivenChannelAdapter mqttInboundClient;
   private KafkaTemplate<String, Object> kafkaClient;
 
@@ -116,7 +117,7 @@ public class Zigbee2MqttHandler extends AbstractHandler {
 
   private List<Asset> getAssets() {
     List<Asset> all = this.retryTemplate.execute(retryContext -> assetServiceApi.all());
-    return ListUtils.defaultIfNull(assetServiceApi.all(), new ArrayList<>()).stream()
+    return ListUtils.defaultIfNull(all, new ArrayList<>()).stream()
         .filter(
             asset ->
                 asset.getNetworkConfiguration().getType().equals(NetworkConfigurationType.MQTT))

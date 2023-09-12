@@ -2,14 +2,14 @@ version: "3.9"
 
 services:
   mongo:
-    image: @docker-image-mongodb@
+    image: mongodb/mongodb-community-server:6.0.8-ubi8
     container_name: mongo
     ports:
       - "27017:27017"
     networks:
       - app-tier
   zipkin:
-    image: @docker-image-zipkin@
+    image: openzipkin/zipkin:2.24.2
     container_name: zipkin
     ports:
       - "9411:9411"

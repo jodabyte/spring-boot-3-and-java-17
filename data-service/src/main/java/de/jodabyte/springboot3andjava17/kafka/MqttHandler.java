@@ -7,7 +7,11 @@ import java.time.Duration;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
-import org.apache.kafka.streams.kstream.*;
+import org.apache.kafka.streams.kstream.Consumed;
+import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.kstream.Produced;
+import org.apache.kafka.streams.kstream.Repartitioned;
+import org.apache.kafka.streams.kstream.TimeWindows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.support.serializer.JsonSerde;
 import org.springframework.stereotype.Component;
@@ -22,9 +26,9 @@ public class MqttHandler {
       Produced.with(Serdes.String(), Serdes.String());
 
   @Autowired
-  void countValues(StreamsBuilder kStreamBuilder) {
+  void countValues(StreamsBuilder streamsBuilder) {
     KStream<String, ?> stream =
-        kStreamBuilder.stream(KafkaContract.TOPIC_MQTT, INPUT_PARAMETERS)
+        streamsBuilder.stream(KafkaContract.TOPIC_MQTT, INPUT_PARAMETERS)
             .repartition(Repartitioned.as("Count-Values"));
 
     stream
